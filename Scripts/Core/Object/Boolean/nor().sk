@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Description nor  Returns true if both Booleans are false
+// Returns     true if both Booleans are false, false if not
+// Examples    value1 nor value2  // or value1.nor(value2)
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Boolean operand) Boolean
+

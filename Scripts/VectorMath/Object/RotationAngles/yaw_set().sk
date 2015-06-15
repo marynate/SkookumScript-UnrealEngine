@@ -1,0 +1,19 @@
+//---------------------------------------------------------------------------------------
+// Sets the yaw value
+//
+// # Params:
+//   yaw: new yaw vaule
+//
+// # Returns: itself
+//
+// # Examples:
+//   angles.yaw_set(val)
+//
+// #See Also
+//   pitch_set(), roll_set(), yaw_pitch_roll_set(), yaw(), pitch(), roll(), zero()
+//
+// # Author(s): Markus Breyer
+//---------------------------------------------------------------------------------------
+
+(Real yaw) RotationAngles
+

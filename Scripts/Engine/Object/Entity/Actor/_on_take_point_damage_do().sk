@@ -1,0 +1,6 @@
+//---------------------------------------------------------------------------------------
+// Whenever an `TakePointDamage` event occurs on this actor, run `code` on it.
+// This coroutine never finishes by itself and can only be terminated externally.
+//---------------------------------------------------------------------------------------
+
+((Real damage, Controller instigated_by, Vector3 hit_location, PrimitiveComponent hit_component, Name bone_name, Vector3 shot_from_direction, DamageType damage_type, Actor damage_causer) code)

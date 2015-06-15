@@ -1,0 +1,10 @@
+//---------------------------------------------------------------------------------------
+// Description Returns the data instance with the specified name in this scope if it
+//             exists or nil if it does not.
+// Arg         data_name - name of data to lookup
+// RetArg      exists - set to true if exists and false if not
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Symbol data_name; Boolean exists) Object
+

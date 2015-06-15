@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Description ++ Increases its enumeration value by one.
+// Returns     itself
+// Examples    enum++  // or enum.increment
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+() ThisClass_
+

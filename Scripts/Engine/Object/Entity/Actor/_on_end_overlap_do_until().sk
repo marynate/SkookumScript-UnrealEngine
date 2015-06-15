@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Whenever an `ActorEndOverlap` event occurs on this actor, run `code` on it.
+// If `code` returns `false`, continue waiting for next event, 
+// otherwise, exit and set `actor` to the current `actor`.
+//
+// See: _on_end_overlap_do, _on_begin_overlap_do_until
+//---------------------------------------------------------------------------------------
+
+((Actor actor) Boolean code; Actor actor)

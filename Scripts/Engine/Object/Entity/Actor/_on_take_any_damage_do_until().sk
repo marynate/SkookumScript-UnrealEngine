@@ -1,0 +1,7 @@
+//---------------------------------------------------------------------------------------
+// Whenever an `TakeAnyDamage` event occurs on this actor, run `code` on it.
+// If `code` returns `false`, continue waiting for next event, 
+// otherwise, exit and return the event parameters
+//---------------------------------------------------------------------------------------
+
+((Real damage, DamageType damage_type, Controller instigated_by, Actor damage_causer) Boolean code; Real damage, DamageType damage_type, Controller instigated_by, Actor damage_causer)

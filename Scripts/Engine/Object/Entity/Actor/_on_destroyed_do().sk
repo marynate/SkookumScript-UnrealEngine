@@ -1,0 +1,8 @@
+//---------------------------------------------------------------------------------------
+// Whenever an `Destroyed` event occurs on this actor, run `code` on it.
+// This coroutine never finishes by itself and can only be terminated externally.
+//
+// See: _on_begin_overlap_do, _on_end_overlap_do
+//---------------------------------------------------------------------------------------
+
+(() code)

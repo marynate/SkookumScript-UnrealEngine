@@ -1,0 +1,22 @@
+//---------------------------------------------------------------------------------------
+// Returns the x value
+//
+// # Returns: the x-axis value
+//
+// # Examples:
+//   do_stuff(vec.x)
+//
+// # Notes:
+//   Vector4 routines with parameters or temporary variables that use `x` must use
+//  `this.x`, `this.x()` to call this routine to differentiate between this routine
+//  without arguments and the variable. Alternatively if a different variable such as
+//  `x_` is used then `x` can be used as this routine without arguments.
+//
+// # See:
+//   y(), z(), x_set(), y_set(), z_set(), xyz_set(), zero()
+//
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+() Real
+

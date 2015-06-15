@@ -1,0 +1,17 @@
+//---------------------------------------------------------------------------------------
+// After one frame calls `_startup()`
+// 
+// Examples: Called by constructor.
+// See: _startup()
+//---------------------------------------------------------------------------------------
+
+() 
+
+  [
+  // Wait one frame - this ensures the UE4 game engine is running, getting ticks and
+  // @@world has been initialized before we launch our first coroutine.
+  // This is a bit of a hack - eventually a Master object will be created at game start.
+  _wait
+  _startup
+  ]
+

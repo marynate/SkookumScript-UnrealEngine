@@ -1,0 +1,12 @@
+//---------------------------------------------------------------------------------------
+// Description Returns a new Boolean value that is the negation of the current value
+//             - if it is true it returns false, if it is false it returns true.
+// Returns     new negated value
+// Examples    not value  // or value.not
+// Note        The postfix operator ~ still works though it is deprecated - use not prefix
+//             operator or .not method instead.
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+() Boolean
+

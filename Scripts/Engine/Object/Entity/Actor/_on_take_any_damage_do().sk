@@ -1,0 +1,6 @@
+//---------------------------------------------------------------------------------------
+// Whenever an `TakeAnyDamage` event occurs on this actor, run `code` on it.
+// This coroutine never finishes by itself and can only be terminated externally.
+//---------------------------------------------------------------------------------------
+
+((Real damage, DamageType damage_type, Controller instigated_by, Actor damage_causer) code)

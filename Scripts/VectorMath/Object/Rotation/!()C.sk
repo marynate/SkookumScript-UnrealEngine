@@ -1,0 +1,15 @@
+//---------------------------------------------------------------------------------------
+// Class constructor
+//
+// # Author(s): Markus Breyer
+//---------------------------------------------------------------------------------------
+
+()
+
+  [
+  // Only create if hooked up to engine - i.e. not during stand-alone IDE
+  if Debug.engine_present?
+    [
+    @@zero: Rotation!
+    ]
+  ]

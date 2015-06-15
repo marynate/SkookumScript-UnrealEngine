@@ -1,0 +1,11 @@
+//---------------------------------------------------------------------------------------
+// Sets the named data variable/member to the supplied instance and ignores its type.
+//
+// #Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+( // name of data variable/member
+  Symbol name,
+  // value to set data to
+  Object value: nil
+)

@@ -1,0 +1,15 @@
+//---------------------------------------------------------------------------------------
+// Description Ensures that this number lies inclusively within the range of the supplied
+//             minimum and maximum values returning a *reference* to the current value
+//             if it is withing the range or a *reference* to min or max wichever is
+//             closest to the current value.
+//             The original number remains unchanged.
+// Returns     either this number if it lies in the desired range or min or max
+// Examples    do_stuff(num.clamp(0, 100))
+//             num := num.clamp(0, 100)
+// See Also    is_between()
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Integer min, Integer max) Integer
+

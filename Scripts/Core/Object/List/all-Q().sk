@@ -1,0 +1,39 @@
+//---------------------------------------------------------------------------------------
+// Iterates over each item in the list calling supplied immediate closure `test` with
+// each item as an argument and stops with first `test` that returns false.
+//
+// # Returns: `true` if test returns true for any item, otherwise `false`
+//
+// # Examples:
+//   {3 4 5}.all?[item.pow2?]  // false
+//   {2 4 8}.all?[item.pow2?]  // true
+//
+// # See:       do_*(), _do*(), any?()
+// # Notes:     Use _*() versions for durational iteration.
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+((ItemClass_ item) Boolean test) Boolean
+
+  [
+  !count:   length
+  !idx:     0
+  !result?: true
+  
+  loop
+    [
+    if idx >= count
+        [
+        exit
+        ]
+      not test(at(idx))
+        [
+        result?: false
+        exit
+        ]
+
+    idx++
+    ]
+
+  result?
+  ]  

@@ -1,0 +1,16 @@
+Vector3 !@@zero
+Vector3 !@@axis_x
+Vector3 !@@axis_y
+Vector3 !@@axis_z
+Vector3 !@@axis_x_neg
+Vector3 !@@axis_y_neg
+Vector3 !@@axis_z_neg
+
+// World Directions
+Vector3 !@@direction_left
+Vector3 !@@direction_right
+Vector3 !@@direction_forward
+Vector3 !@@direction_backward
+Vector3 !@@direction_up
+Vector3 !@@direction_down
+

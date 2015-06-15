@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------------------
+// Returns the pitch value
+//
+// # Returns: the pitch value
+//
+// # Examples:
+//   do_stuff(angles.pitch)
+//
+// # See:
+//   yaw(), roll(), yaw_set(), pitch_set(), roll_set(), yaw_pitch_roll_set(), zero()
+//
+// # Author(s): Markus Breyer
+//---------------------------------------------------------------------------------------
+
+() Real
+
