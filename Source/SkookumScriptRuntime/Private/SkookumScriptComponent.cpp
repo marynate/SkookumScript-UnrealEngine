@@ -98,7 +98,7 @@ void USkookumScriptComponent::OnRegister()
       }
 
     // Based on the desired class, create SkInstance or SkDataInstance
-    SkInstance * instance_p = SkInstance::new_instance(class_p);
+    SkInstance * instance_p = class_p->new_instance();
     instance_p->construct<SkUEActor>(actor_p); // Keep track of owner actor
     m_instance_p = instance_p;
     }

@@ -29,6 +29,7 @@ namespace SkUEActor_Impl
     {
     UClass ** uclass_pp = SkUEClassBindingHelper::ms_class_map_s2u.Find(class_p);
     SK_ASSERTX(uclass_pp, a_cstr_format("Class '%s' not found in ms_class_map_s2u. All actor classes must be present.", class_p->get_name_cstr_dbg()));
+    if (!uclass_pp) { return nullptr; }
     EObjectFlags exclude_flags = RF_ClassDefaultObject | RF_PendingKill;
     object_array_p->Reserve(1024);
     GetObjectsOfClass(*uclass_pp, *object_array_p, true, exclude_flags);
