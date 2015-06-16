@@ -1,4 +1,12 @@
-// Copyright 1998-2014 Epic Games, Inc. All Rights Reserved.
+//=======================================================================================
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
+//
+// Precompiled header file for all plugin CPP files
+// 
+// Author: Conan Reis
+//=======================================================================================
+
 #pragma once
 
 #include "ISkookumScriptRuntime.h"

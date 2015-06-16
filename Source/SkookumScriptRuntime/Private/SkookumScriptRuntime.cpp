@@ -1,4 +1,11 @@
-// Copyright 1998-2014 Epic Games, Inc. All Rights Reserved.
+//=======================================================================================
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
+//
+// Main entry point for the SkookumScript runtime plugin
+// 
+// Author: Conan Reis
+//=======================================================================================
 
 #include "SkookumScriptRuntimePrivatePCH.h"
 #include "Bindings/SkUEBindings.hpp"

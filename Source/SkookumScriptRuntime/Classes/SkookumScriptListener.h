@@ -1,11 +1,10 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c) 2014 Agog Labs Inc.,
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
-// SkookumScript (Sk) Unreal Engine (UE) Bindings
+// UObject that listens to dynamic multicast delegate events
 // 
-// #Author(s):  Markus Breyer
+// Author(s): Markus Breyer
 //=======================================================================================
 
 #pragma once

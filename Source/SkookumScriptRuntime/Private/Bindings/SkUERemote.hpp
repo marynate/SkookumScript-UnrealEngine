@@ -1,24 +1,20 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c) 2014 Agog Labs Inc.,
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
-// File:       SkookumScript Remote Client
-// Author(s):  Conan Reis
-// Notes:       
+// SkookumScript Remote Client
+// 
+// Author: Conan Reis
 //=======================================================================================
 
-
-#ifndef __SKUEREMOTE_HPP
-#define __SKUEREMOTE_HPP
-
+#pragma once
 
 //=======================================================================================
 // Includes
 //=======================================================================================
 
 #include <SkookumScript/SkookumRemoteRuntimeBase.hpp>
-#include "Networking.h"
+#include <Networking.h>
 
 
 //=======================================================================================
@@ -112,12 +108,4 @@ class SkUERemote : public SkookumRemoteRuntimeBase
   };  // SkUERemote
 
 #endif  // SKOOKUM_REMOTE_UNREAL
-
-
-//=======================================================================================
-// Inline Methods
-//=======================================================================================
-
-
-#endif  // __SKUEREMOTE_HPP
 

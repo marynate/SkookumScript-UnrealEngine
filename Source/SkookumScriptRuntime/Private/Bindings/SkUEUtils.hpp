@@ -1,65 +1,17 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c) 2014 Agog Labs Inc.,
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
 // SkookumScript Unreal Engine Helper Utilities
 // 
-// # Author(s):  Conan Reis
+// Author:  Conan Reis
 //=======================================================================================
 
-
-#ifndef __SKUEUTILS_HPP
-#define __SKUEUTILS_HPP
-
+#pragma once
 
 //=======================================================================================
 // Includes
 //=======================================================================================
-
-#include "Engine/World.h"
-#include "SharedPointer.h"
-
-
-//=======================================================================================
-// Global Structures
-//=======================================================================================
-
-//---------------------------------------------------------------------------------------
-// Helper class to hold a pointer to a component 
-// and make sure it gets destroyed when the pointer goes away
-template <class _ComponentClass>
-class TWeakComponentPtr : public TWeakObjectPtr<_ComponentClass>
-  {
-  public:
-
-    TWeakComponentPtr(const _ComponentClass * component_p) : TWeakObjectPtr<_ComponentClass>(component_p) {}
-    ~TWeakComponentPtr()
-      {
-      _ComponentClass * component_p = Get();
-
-      if (component_p)
-        {
-        component_p->ConditionalBeginDestroy();
-        }
-      }
-  };
-
-//---------------------------------------------------------------------------------------
-// Storage specialization - TWeakComponentPtr<UParticleSystemComponent> stored indirectly as pointer in SkUserData rather than whole structure
-template<> inline TWeakComponentPtr<UParticleSystemComponent> * SkUserDataBase::as<TWeakComponentPtr<UParticleSystemComponent>>() const { return as_stored<TWeakComponentPtr<UParticleSystemComponent>>(); }
-
-//---------------------------------------------------------------------------------------
-// Helper class for delegate callbacks
-// $Revisit - Should look at this again in the future
-class SkUERawICoroutineResume : public SkInvokedCoroutine
-  {
-  public:
-
-    void on_audio_finished(UAudioComponent *)  { resume(); }
-    
-  };
-
 
 //=======================================================================================
 // Global Functions
@@ -114,13 +66,3 @@ inline FName AStringToExistingFName(const AString & str)
   // $Revisit - CReis Look into StringCast<>
   return FName(str.as_cstr(), FNAME_Find);
   }
-
-//---------------------------------------------------------------------------------------
-// Gets player pawn from first player controller.
-//APawn * get_player_pawn();
-
-
-
-
-#endif  // __SKUEUTILS_HPP
-

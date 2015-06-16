@@ -1,11 +1,10 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c) 2015 Agog Labs Inc.
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
-// SkookumScript (Sk) Unreal Engine (UE) Bindings
+// Factory/manager class for USkookumScriptListener objects
 // 
-// #Author(s):  Markus Breyer
+// Author: Markus Breyer
 //=======================================================================================
 
 //=======================================================================================

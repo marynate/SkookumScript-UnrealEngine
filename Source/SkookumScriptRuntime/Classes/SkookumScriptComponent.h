@@ -1,11 +1,10 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c) 2014 Agog Labs Inc.,
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
-// SkookumScript (Sk) Unreal Engine (UE) Bindings
+// SkookumScript Actor Component
 // 
-// #Author(s):  Conan Reis
+// Author: Conan Reis, Markus Breyer
 //=======================================================================================
 
 #pragma once

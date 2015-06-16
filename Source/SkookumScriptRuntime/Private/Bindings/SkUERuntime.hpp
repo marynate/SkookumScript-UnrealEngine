@@ -1,17 +1,13 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c) 2014 Agog Labs Inc.,
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
 // SkookumScript Runtime Hooks for Unreal - Input/Output Init/Update/Deinit Manager
 // 
-// #Author(s):  Conan Reis
+// Author: Conan Reis
 //=======================================================================================
 
-
-#ifndef __SKUERUNTIME_HPP
-#define __SKUERUNTIME_HPP
-
+#pragma once
 
 //=======================================================================================
 // Includes
@@ -86,12 +82,4 @@ class SkUERuntime : public SkookumRuntimeBase
       SkookumScriptListenerManager m_listener_manager;
 
   };  // SkUERuntime
-
-
-//=======================================================================================
-// Inline Methods
-//=======================================================================================
-
-
-#endif  // __SKUERUNTIME_HPP
 
