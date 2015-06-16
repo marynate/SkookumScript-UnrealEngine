@@ -13,12 +13,12 @@
 // Includes
 //=======================================================================================
 
-#include <SkookumScript/SkClassBinding.hpp>
+#include "../SkUEClassBinding.hpp"
 #include <UnrealMath.h> // Vector math functions
 
 //---------------------------------------------------------------------------------------
 // SkookumScript color class
-class SkColor : public SkClassBindingSimple<SkColor, FLinearColor>
+class SkColor : public SkClassBindingSimpleForceInit<SkColor, FLinearColor>
   {
   public:
 

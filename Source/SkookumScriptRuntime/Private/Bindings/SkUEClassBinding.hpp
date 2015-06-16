@@ -117,6 +117,16 @@ class SkUEClassBindingActor : public SkUEClassBindingEntity<_BindingClass, _AAct
 
   };
 
+//---------------------------------------------------------------------------------------
+// Class binding for types with a constructor that takes an EForceInit argument
+template<class _BindingClass, typename _DataType>
+class SkClassBindingSimpleForceInit : public SkClassBindingBase<_BindingClass, _DataType>
+  {
+  public:
+    // Constructor initializes with ForceInitToZero
+    static void mthd_ctor(SkInvokedMethod * scope_p, SkInstance ** result_pp) { scope_p->get_this()->construct<_BindingClass>(ForceInitToZero); }
+  };
+
 //=======================================================================================
 // Class Data Definitions
 //=======================================================================================

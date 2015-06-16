@@ -13,12 +13,12 @@
 // Includes
 //=======================================================================================
 
-#include <SkookumScript/SkClassBinding.hpp>
+#include "../SkUEClassBinding.hpp"
 #include <UnrealMath.h> // Vector math functions
 
 //---------------------------------------------------------------------------------------
 // SkookumScript 2D vector class
-class SkVector2 : public SkClassBindingSimple<SkVector2, FVector2D>
+class SkVector2 : public SkClassBindingSimpleForceInit<SkVector2, FVector2D>
   {
   public:
 

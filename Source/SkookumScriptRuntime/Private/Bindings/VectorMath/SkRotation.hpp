@@ -13,12 +13,12 @@
 // Includes
 //=======================================================================================
 
-#include <SkookumScript/SkClassBinding.hpp>
+#include "../SkUEClassBinding.hpp"
 #include <UnrealMath.h> // Vector math functions
 
 //---------------------------------------------------------------------------------------
 // SkookumScript rotation/quaternion class
-class SkRotation : public SkClassBindingSimple<SkRotation, FQuat>
+class SkRotation : public SkClassBindingSimpleForceInit<SkRotation, FQuat>
   {
   public:
 
