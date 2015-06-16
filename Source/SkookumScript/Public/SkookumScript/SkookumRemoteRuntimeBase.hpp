@@ -116,7 +116,7 @@ class SkookumRemoteRuntimeBase : public SkookumRemoteBase
     virtual void on_cmd_freshen_compiled_reply(eCompiledState state);
     void         on_cmd_hierarchy_update(const void ** binary_pp);
     void         on_cmd_class_update(const void ** binary_pp);
-    void         on_cmd_recompile_classes_reply(const ASymbol & class_name, uint32_t class_count, uint32_t error_count);
+    void         on_cmd_recompile_classes_reply(const void ** binary_pp);
 
     void         on_cmd_breakpoint_update(SkBreakPoint * bp_p, SkBreakPoint::eUpdate action);
     void         on_cmd_break_continue();
@@ -143,8 +143,8 @@ class SkookumRemoteRuntimeBase : public SkookumRemoteBase
     // test this value directly - call is_suspended().
     mutable uint32_t m_suspend_count;
 
-    // Name/id of pending remote command
-    ASymbol m_pending_name;
+    // Name of pending remote command
+    AString m_pending_name;
 
     // Number of remote sub-commands/actions expected before an encapsulating/higher-order
     // command is complete.

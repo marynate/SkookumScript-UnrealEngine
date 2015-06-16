@@ -1,11 +1,10 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c) 2014 Agog Labs Inc.,
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
-// File:       Manages Symbols for SkookumScript
-// Author(s):  Conan Reis
-// Notes:       
+// Manages Symbols for SkookumScript
+//
+// Author:  Conan Reis
 //=======================================================================================
 
 

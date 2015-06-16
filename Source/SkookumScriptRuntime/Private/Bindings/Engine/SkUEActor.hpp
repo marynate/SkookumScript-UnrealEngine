@@ -1,5 +1,5 @@
 //=======================================================================================
-// SkookumScript C++ library.
+// SkookumScript Plugin for Unreal Engine 4
 // Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
 // Additional bindings for the Actor (= AActor) class 

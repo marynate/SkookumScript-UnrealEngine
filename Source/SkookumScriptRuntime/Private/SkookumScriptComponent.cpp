@@ -1,13 +1,10 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c) 2014 Agog Labs Inc.,
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
-// SkookumScript (Sk) Unreal Engine (UE) Bindings
+// SkookumScript Actor Component
 // 
-// Based on: UActor
-// 
-// #Author(s):  Conan Reis
+// Author: Conan Reis, Markus Breyer
 //=======================================================================================
 
 
@@ -98,7 +95,7 @@ void USkookumScriptComponent::OnRegister()
       }
 
     // Based on the desired class, create SkInstance or SkDataInstance
-    SkInstance * instance_p = SkInstance::new_instance(class_p);
+    SkInstance * instance_p = class_p->new_instance();
     instance_p->construct<SkUEActor>(actor_p); // Keep track of owner actor
     m_instance_p = instance_p;
     }

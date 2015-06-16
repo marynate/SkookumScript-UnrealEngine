@@ -1,17 +1,13 @@
 //=======================================================================================
-// SkookumScript C++ library.
-// Copyright (c)  2015 Agog Labs Inc.,
-// All rights reserved.
+// SkookumScript Plugin for Unreal Engine 4
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
-// File:       Manages Symbols for SkookumScript
-// Author(s):  Conan Reis
-// Notes:       
+// Manages Symbols for SkookumScript
+//
+// Author: Conan Reis
 //=======================================================================================
 
-
-#ifndef __SKUESYMBOL_HPP
-#define __SKUESYMBOL_HPP
-
+#pragma once
 
 //=======================================================================================
 // Includes
@@ -62,6 +58,3 @@
   SKUE_SYMBOLS_NAMED
 #undef ASYMX
 #undef ASYM
-
-
-#endif  // __SKUESYMBOL_HPP

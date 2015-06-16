@@ -1,6 +1,6 @@
 //=======================================================================================
 // SkookumScript C++ library.
-// Copyright (c) 2001-2015 Agog Labs Inc. All rights reserved.
+// Copyright (c) 2015 Agog Labs Inc. All rights reserved.
 //
 // SkookumScript rotation/quaternion class
 //
