@@ -13,12 +13,12 @@
 // Includes
 //=======================================================================================
 
-#include <SkookumScript/SkClassBinding.hpp>
+#include "../SkUEClassBinding.hpp"
 #include <UnrealMath.h> // Vector math functions
 
 //---------------------------------------------------------------------------------------
 // SkookumScript Euler angles class
-class SkRotationAngles : public SkClassBindingSimple<SkRotationAngles, FRotator>
+class SkRotationAngles : public SkClassBindingSimpleForceInit<SkRotationAngles, FRotator>
   {
   public:
 
