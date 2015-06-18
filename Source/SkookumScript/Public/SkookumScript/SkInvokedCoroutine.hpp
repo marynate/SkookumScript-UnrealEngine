@@ -112,7 +112,7 @@ class SkInvokedCoroutine : public SkInvokedContextBase
 
     // Overriding from SkInvokedBase
 
-    virtual SkInstance *      new_instance() const;
+    virtual SkInstance *      as_new_instance() const;
     virtual void              abort_invoke(eSkNotify notify_caller = SkNotify_fail, eSkNotifyChild notify_child = SkNotifyChild_abort);
     virtual void              pending_return(bool completed = true);
     virtual void              pending_schedule(bool completed = true);

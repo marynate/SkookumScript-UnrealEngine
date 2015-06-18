@@ -144,7 +144,7 @@ class SkObjectBase
 
     // Data methods
 
-      virtual SkInstance *           as_instance() const;
+      virtual SkInstance *           as_new_instance() const;
       virtual SkInstance *           get_data_by_name(const ASymbol & name) const = 0;
       virtual void                   set_data_by_name(const ASymbol & name, SkInstance * obj_p) = 0;
       virtual SkInvokedContextBase * get_scope_context() const;

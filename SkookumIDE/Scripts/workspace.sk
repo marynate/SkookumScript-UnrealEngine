@@ -98,3 +98,13 @@ Pawn.named("RoboChar1")._path_to_actor(GameplayStatics.player_pawn(@@world 0))
 // Enjoy!!
 // Yours Skookumly,
 // The Mad Scientists at Agog Labs
+
+Vector3!
+Transform!Color!
+Vector4!
+
+7000.0 * 0.8134
+7000.0 * 0.803
+
+this_code.data_by_name('@@random')
+

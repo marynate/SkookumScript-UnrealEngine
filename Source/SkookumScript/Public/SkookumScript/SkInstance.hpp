@@ -256,7 +256,7 @@ class SkInstance : public SkObjectBase, public ARefCountMix<SkInstance>
 
     // Overriding from SkObjectBase
 
-      virtual SkInstance *  as_instance() const                             { return const_cast<SkInstance *>(this); }
+      virtual SkInstance *  as_new_instance() const                         { reference(); return const_cast<SkInstance *>(this); }
       virtual SkInstance *  get_data_by_name(const ASymbol & name) const;
       virtual uint32_t      get_obj_type() const                            { return SkObjectType_instance; } 
       virtual SkInstance *  get_topmost_scope() const;

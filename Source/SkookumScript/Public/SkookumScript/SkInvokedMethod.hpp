@@ -61,7 +61,7 @@ class SkInvokedMethod : public SkInvokedContextBase
 
     // Inherited from SkObjectBase -> SkInvokedContextBase
 
-      virtual SkInstance * new_instance() const;
+      virtual SkInstance * as_new_instance() const;
 
   // Class Methods
 
