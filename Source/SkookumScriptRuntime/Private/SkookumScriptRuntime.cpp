@@ -446,7 +446,7 @@ void FSkookumScriptRuntime::OnWorldInitPre(UWorld * world_p, const UWorld::Initi
   //A_DPRINT("OnWorldInitPre: %S %p\n", *world_p->GetName(), world_p);
 
   #ifdef SKOOKUM_REMOTE_UNREAL
-    SkUERemote::ms_client_p->ensure_connected();
+  SkUERemote::ms_client_p->ensure_connected();
   #endif
 
   if (world_p->IsGameWorld())

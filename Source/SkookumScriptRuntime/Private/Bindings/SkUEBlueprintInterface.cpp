@@ -177,7 +177,7 @@ void SkUEBlueprintInterface::exec_instance_method(FFrame & stack, void * const r
 int32_t SkUEBlueprintInterface::add_method_entry(UClass * ue_class_p, SkMethodBase * sk_method_p, const FString & category)
   {
   // Create new UFunction
-  UFunction * ue_method_p = NewObject<UFunction>(ue_class_p, sk_method_p->get_name_cstr(), RF_Public|RF_RootSet);
+  UFunction * ue_method_p = ConstructObject<UFunction>(UFunction::StaticClass(), ue_class_p, sk_method_p->get_name_cstr(), RF_Public | RF_RootSet);
   ue_method_p->FunctionFlags |= FUNC_BlueprintCallable | FUNC_Public | FUNC_Final | FUNC_Native;
   if (sk_method_p->is_class_member())
     {
@@ -214,9 +214,9 @@ int32_t SkUEBlueprintInterface::add_method_entry(UClass * ue_class_p, SkMethodBa
       return -1;
       }
 
-    param_info.m_ue_param_p->PropertyFlags |= CPF_ReturnParm; // Flag as return value
-    ue_method_p->LinkChild(param_info.m_ue_param_p); // Link return param first so it will be last in the list
-    }
+      param_info.m_ue_param_p->PropertyFlags |= CPF_ReturnParm; // Flag as return value
+      ue_method_p->LinkChild(param_info.m_ue_param_p); // Link return param first so it will be last in the list
+      }
 
   // Handle input parameters
   for (int32_t i = num_params - 1; i >= 0; --i)
@@ -227,7 +227,7 @@ int32_t SkUEBlueprintInterface::add_method_entry(UClass * ue_class_p, SkMethodBa
       goto skip_method;
       }
       
-    ue_method_p->LinkChild(param_info.m_ue_param_p); // Link in reverse order so it will be in correct order eventually
+      ue_method_p->LinkChild(param_info.m_ue_param_p); // Link in reverse order so it will be in correct order eventually
 
     ParamEntry & param_entry = method_entry_p->get_param_entry_array()[i];
     param_entry.m_name = input_param->get_name();
@@ -269,7 +269,7 @@ void SkUEBlueprintInterface::delete_method_entry(uint32_t method_index)
     UFunction * ue_method_p = method_entry_p->m_ue_method_p.Get();
     UClass * ue_class_p = ue_method_p->GetOwnerClass();
     // Unlink from its owner class
-    ue_class_p->RemoveFunctionFromFunctionMap(ue_method_p);
+    //Unsupported in 4.7 ue_class_p->RemoveFunctionFromFunctionMap(ue_method_p);
     // Unlink from the Children list as well
     UField ** prev_field_pp = &ue_class_p->Children;
     for (UField * field_p = *prev_field_pp; field_p; prev_field_pp = &field_p->Next, field_p = *prev_field_pp)
@@ -298,48 +298,48 @@ bool SkUEBlueprintInterface::make_param(ParamInfo * out_param_info_p, UFunction 
   tResultSetter result_setter_p = nullptr;
   if (sk_parameter_class_p == SkBoolean::ms_class_p)
     {
-    property_p = NewObject<UBoolProperty>(ue_method_p, param_name, RF_Public);
+    property_p = ConstructObject<UBoolProperty>(UBoolProperty::StaticClass(), ue_method_p, param_name, RF_Public);
     param_fetcher_p = &fetch_param_boolean;
     result_setter_p = &set_result_boolean;
     }
   else if (sk_parameter_class_p == SkInteger::ms_class_p)
     {
-    property_p = NewObject<UIntProperty>(ue_method_p, param_name, RF_Public);
+    property_p = ConstructObject<UIntProperty>(UIntProperty::StaticClass(), ue_method_p, param_name, RF_Public);
     param_fetcher_p = &fetch_param_integer;
     result_setter_p = &set_result_integer;
     }
   else if (sk_parameter_class_p == SkReal::ms_class_p)
     {
-    property_p = NewObject<UFloatProperty>(ue_method_p, param_name, RF_Public);
+    property_p = ConstructObject<UFloatProperty>(UFloatProperty::StaticClass(), ue_method_p, param_name, RF_Public);
     param_fetcher_p = &fetch_param_real;
     result_setter_p = &set_result_real;
     }
   else if (sk_parameter_class_p == SkString::ms_class_p)
     {
-    property_p = NewObject<UStrProperty>(ue_method_p, param_name, RF_Public);
+    property_p = ConstructObject<UStrProperty>(UStrProperty::StaticClass(), ue_method_p, param_name, RF_Public);
     param_fetcher_p = &fetch_param_string;
     result_setter_p = &set_result_string;
     }
   else if (sk_parameter_class_p == SkVector3::ms_class_p)
     {
-    UStructProperty * struct_property_p = NewObject<UStructProperty>(ue_method_p, param_name);
-    struct_property_p->Struct = NewObject<UScriptStruct>(property_p, "Vector", RF_Public);
+    UStructProperty * struct_property_p = ConstructObject<UStructProperty>(UStructProperty::StaticClass(), ue_method_p, param_name);
+    struct_property_p->Struct = ConstructObject<UScriptStruct>(UScriptStruct::StaticClass(), property_p, "Vector", RF_Public);
     property_p = struct_property_p;
     param_fetcher_p = &fetch_param_vector3;
     result_setter_p = &set_result_vector3;
     }
   else if (sk_parameter_class_p == SkRotationAngles::ms_class_p)
     {
-    UStructProperty * struct_property_p = NewObject<UStructProperty>(ue_method_p, param_name);
-    struct_property_p->Struct = NewObject<UScriptStruct>(property_p, "Rotator", RF_Public);
+    UStructProperty * struct_property_p = ConstructObject<UStructProperty>(UStructProperty::StaticClass(), ue_method_p, param_name);
+    struct_property_p->Struct = ConstructObject<UScriptStruct>(UScriptStruct::StaticClass(), property_p, "Rotator", RF_Public);
     property_p = struct_property_p;
     param_fetcher_p = &fetch_param_rotation_angles;
     result_setter_p = &set_result_rotation_angles;
     }
   else if (sk_parameter_class_p == SkTransform::ms_class_p)
     {
-    UStructProperty * struct_property_p = NewObject<UStructProperty>(ue_method_p, param_name);
-    struct_property_p->Struct = NewObject<UScriptStruct>(property_p, "Transform", RF_Public);
+    UStructProperty * struct_property_p = ConstructObject<UStructProperty>(UStructProperty::StaticClass(), ue_method_p, param_name);
+    struct_property_p->Struct = ConstructObject<UScriptStruct>(UScriptStruct::StaticClass(), property_p, "Transform", RF_Public);
     property_p = struct_property_p;
     param_fetcher_p = &fetch_param_transform;
     result_setter_p = &set_result_transform;
@@ -350,7 +350,7 @@ bool SkUEBlueprintInterface::make_param(ParamInfo * out_param_info_p, UFunction 
     SK_ASSERTX(uclass_p, a_cstr_format("Class '%s' of parameter '%s' of method '%S.%S' being exported to Blueprints is not a known engine class.", sk_parameter_class_p->get_key_class_name().as_cstr_dbg(), param_name.GetPlainANSIString(), *ue_method_p->GetOwnerClass()->GetName(), *ue_method_p->GetName()));
     if (uclass_p)
       {
-      property_p = NewObject<UObjectProperty>(ue_method_p, uclass_p, param_name, RF_Public);
+      property_p = ConstructObject<UObjectProperty>(uclass_p, ue_method_p, param_name, RF_Public);
       param_fetcher_p = &fetch_param_entity;
       result_setter_p = &set_result_entity;
       }
