@@ -14,7 +14,8 @@
 
 #include "SkookumScriptRuntimePrivatePCH.h"
 #include "SkUERemote.hpp"
-#include "AssertionMacros.h"
+#include "Bindings/SkUEBlueprintInterface.hpp"
+#include <AssertionMacros.h>
 //#include <ws2tcpip.h>
 
 
@@ -284,6 +285,18 @@ void SkUERemote::on_cmd_send(const ADatum & datum)
       SkLocale_local,
       SkDPrintType_warning);
     }
+  }
+
+//---------------------------------------------------------------------------------------
+void SkUERemote::on_class_updated(SkClass * class_p)
+  {
+#if 0 // Disabled as it currently does not quite work right yet
+  UClass * uclass_p = SkUEBlueprintInterface::get()->reinitialize_class(class_p);
+  if (uclass_p)
+    {
+    //FBlueprintActionDatabase::Get().RefreshClassActions(uclass_p);
+    }
+#endif
   }
 
 //---------------------------------------------------------------------------------------

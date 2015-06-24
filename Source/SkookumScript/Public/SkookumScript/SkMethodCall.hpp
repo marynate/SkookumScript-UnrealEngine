@@ -34,9 +34,9 @@ class SkMethodCall : public SkInvokeBase
   friend class SkParser;
 
   public:
-	  SK_NEW_OPERATORS(SkMethodCall);
   // Common Methods
 
+    SK_NEW_OPERATORS(SkMethodCall);
     SkMethodCall(const ASymbol & method_name = ASymbol::get_null(), SkClass * scope_p = nullptr) : SkInvokeBase(method_name, scope_p) {}
     SkMethodCall(SkInvokeBase * call_p) : SkInvokeBase(call_p) {}
 

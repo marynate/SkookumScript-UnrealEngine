@@ -67,31 +67,32 @@ void USkookumScriptComponent::OnRegister()
         SkClass * known_super_class_p;
         for (known_super_class_p = class_p; known_super_class_p; known_super_class_p = known_super_class_p->get_superclass())
           {
-          if (SkUEClassBindingHelper::ms_class_map_s2u.Find(known_super_class_p)) break;
+          if (SkUEClassBindingHelper::get_ue_class_from_sk_class(known_super_class_p)) break;
           }
 
         // Find most derived UE4 class known to SkookumScript
-        UClass * obj_uclass_p = actor_p->GetClass();
-        SkClass ** class_pp = SkUEClassBindingHelper::ms_class_map_u2s.Find(actor_p->GetClass());
-        for (; !class_pp && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
+        SkClass * class_p = nullptr;
+        for (UClass * obj_uclass_p = actor_p->GetClass(); !class_p && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
           {
-          class_pp = SkUEClassBindingHelper::ms_class_map_u2s.Find(obj_uclass_p);
+          class_p = SkUEClassBindingHelper::get_sk_class_from_ue_class(obj_uclass_p);
           }
-        SK_ASSERTX(class_pp && *class_pp == known_super_class_p, a_cstr_format("Script Class Name '%s' in SkookumScriptComponent of '%S' is not properly related to Actor. Both the Script Class Name '%s' and the UE4 class of '%S' ('%S') must share the topmost ancestor class known to both SkookumScript and UE4. Right now these ancestor classes are different ('%s' for '%s' and '%s' for '%S').", class_name_ascii.as_cstr(), *actor_p->GetName(), class_name_ascii.as_cstr(), *actor_p->GetName(), *actor_p->GetClass()->GetName(), known_super_class_p ? known_super_class_p->get_name_cstr_dbg() : "<none>", class_name_ascii.as_cstr(), class_pp ? (*class_pp)->get_name_cstr_dbg() : "<none>", *actor_p->GetClass()->GetName()));
+        SK_ASSERTX(class_p && class_p == known_super_class_p, a_cstr_format("Script Class Name '%s' in SkookumScriptComponent of '%S' is not properly related to Actor. Both the Script Class Name '%s' and the UE4 class of '%S' ('%S') must share the topmost ancestor class known to both SkookumScript and UE4. Right now these ancestor classes are different ('%s' for '%s' and '%s' for '%S').", class_name_ascii.as_cstr(), *actor_p->GetName(), class_name_ascii.as_cstr(), *actor_p->GetName(), *actor_p->GetClass()->GetName(), known_super_class_p ? known_super_class_p->get_name_cstr_dbg() : "<none>", class_name_ascii.as_cstr(), class_p ? class_p->get_name_cstr_dbg() : "<none>", *actor_p->GetClass()->GetName()));
       #endif
       }
     else
       {
     set_default_class:
       // Find most derived UE4 class known to SkookumScript
-      UClass * obj_uclass_p = actor_p->GetClass();
-      SkClass ** class_pp = SkUEClassBindingHelper::ms_class_map_u2s.Find(actor_p->GetClass());
-      for (; !class_pp && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
+      SkClass * class_p = nullptr;
+      for (UClass * obj_uclass_p = actor_p->GetClass(); !class_p && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
         {
-        class_pp = SkUEClassBindingHelper::ms_class_map_u2s.Find(obj_uclass_p);
+        class_p = SkUEClassBindingHelper::get_sk_class_from_ue_class(obj_uclass_p);
         }
-      SK_ASSERTX(class_pp, a_cstr_format("No parent class of %S is known to SkookumScript!", *obj_uclass_p->GetName()));
-      class_p = class_pp ? *class_pp : SkBrain::get_class(ASymbol_Actor); // Recover from bad user input
+      SK_ASSERTX(class_p, a_cstr_format("No parent class of %S is known to SkookumScript!", *actor_p->GetClass()->GetName()));
+      if (!class_p)
+        {
+        class_p = SkBrain::get_class(ASymbol_Actor); // Recover from bad user input
+        }
       }
 
     // Based on the desired class, create SkInstance or SkDataInstance

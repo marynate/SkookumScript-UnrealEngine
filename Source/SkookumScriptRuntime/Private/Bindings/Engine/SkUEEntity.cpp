@@ -139,9 +139,9 @@ namespace SkUEEntity_Impl
       {
       // Determine class
       SkClass * class_p = &((SkMetaClass *)scope_p->get_topmost_scope())->get_class_info();
-      UClass ** uclass_pp = SkUEClassBindingHelper::ms_class_map_s2u.Find(class_p);
-      SK_ASSERTX(uclass_pp, a_cstr_format("The UE4 equivalent of class type '%s' is not known to SkookumScript.", class_p->get_name_cstr_dbg()));
-      *result_pp = uclass_pp ? SkUEEntityClass::new_instance(*uclass_pp) : SkBrain::ms_nil_p;
+      UClass * uclass_p = SkUEClassBindingHelper::get_ue_class_from_sk_class(class_p);
+      SK_ASSERTX(uclass_p, a_cstr_format("The UE4 equivalent of class type '%s' is not known to SkookumScript.", class_p->get_name_cstr_dbg()));
+      *result_pp = uclass_p ? SkUEEntityClass::new_instance(uclass_p) : SkBrain::ms_nil_p;
       }
     }
 
@@ -153,17 +153,17 @@ namespace SkUEEntity_Impl
       {
       // Determine class of object to load
       SkClass * class_p = &((SkMetaClass *)scope_p->get_topmost_scope())->get_class_info();
-      UClass ** uclass_pp = SkUEClassBindingHelper::ms_class_map_s2u.Find(class_p);
-      SK_ASSERTX(uclass_pp, a_cstr_format("Cannot load entity '%s' as the UE4 equivalent of class type '%s' is not known to SkookumScript.", scope_p->get_arg<SkString>(SkArg_1).as_cstr(), class_p->get_name_cstr_dbg()));
+      UClass * uclass_p = SkUEClassBindingHelper::get_ue_class_from_sk_class(class_p);
+      SK_ASSERTX(uclass_p, a_cstr_format("Cannot load entity '%s' as the UE4 equivalent of class type '%s' is not known to SkookumScript.", scope_p->get_arg<SkString>(SkArg_1).as_cstr(), class_p->get_name_cstr_dbg()));
 
       // Load object
       UObject * obj_p = nullptr;
-      if (uclass_pp)
+      if (uclass_p)
         {
-        obj_p = StaticLoadObject(*uclass_pp, SkUEClassBindingHelper::get_world(), *AStringToFString(scope_p->get_arg<SkString>(SkArg_1)));
+        obj_p = StaticLoadObject(uclass_p, SkUEClassBindingHelper::get_world(), *AStringToFString(scope_p->get_arg<SkString>(SkArg_1)));
         }
 
-      *result_pp = obj_p ? SkUEEntity::new_instance(obj_p, *uclass_pp, class_p) : SkBrain::ms_nil_p;
+      *result_pp = obj_p ? SkUEEntity::new_instance(obj_p, uclass_p, class_p) : SkBrain::ms_nil_p;
       }
     }
 
@@ -175,17 +175,17 @@ namespace SkUEEntity_Impl
       {
       // Determine class of object to get
       SkClass * class_p = &((SkMetaClass *)scope_p->get_topmost_scope())->get_class_info();
-      UClass ** uclass_pp = SkUEClassBindingHelper::ms_class_map_s2u.Find(class_p);
-      SK_ASSERTX(uclass_pp, a_cstr_format("Cannot get default instance of class '%s' as the UE4 equivalent of this class is not known to SkookumScript.", class_p->get_name_cstr_dbg()));
+      UClass * uclass_p = SkUEClassBindingHelper::get_ue_class_from_sk_class(class_p);
+      SK_ASSERTX(uclass_p, a_cstr_format("Cannot get default instance of class '%s' as the UE4 equivalent of this class is not known to SkookumScript.", class_p->get_name_cstr_dbg()));
 
       // Get default object
       UObject * obj_p = nullptr;
-      if (uclass_pp)
+      if (uclass_p)
         {
-        obj_p = GetMutableDefault<UObject>(*uclass_pp);
+        obj_p = GetMutableDefault<UObject>(uclass_p);
         }
 
-      *result_pp = obj_p ? SkUEEntity::new_instance(obj_p, *uclass_pp, class_p) : SkBrain::ms_nil_p;
+      *result_pp = obj_p ? SkUEEntity::new_instance(obj_p, uclass_p, class_p) : SkBrain::ms_nil_p;
       }
     }
 

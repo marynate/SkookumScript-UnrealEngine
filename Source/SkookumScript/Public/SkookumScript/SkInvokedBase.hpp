@@ -157,6 +157,7 @@ class SkInvokedBase : public SkObjectBase, public AListNode<SkInvokedBase>
     
     // Overriding from SkObjectBase
 
+      virtual SkInstance *           find_data_by_name(const ASymbol & name) const override;
       virtual SkInstance *           get_data_by_name(const ASymbol & name) const;
       virtual uint32_t               get_obj_type() const { return SkObjectType_invoked_obj; } 
       virtual SkInvokedContextBase * get_scope_context() const;
@@ -351,6 +352,7 @@ class SkInvokedContextBase : public SkInvokedBase
       void data_append_args(SkInstance ** arguments_pp, uint32_t arg_count, const SkInvokableBase & invokable_params);
       void data_append_arg(const ASymbol & param_name, SkInstance * arg_p) { m_data.append(*SkData::pool_new(param_name, arg_p)); }
       void data_append_vars(const AVCompactArrayBase<ASymbol> & var_names);
+      void data_ensure_size(uint32_t arg_count) { m_data.ensure_size(arg_count); }
       void data_bind_return_args(const APArrayBase<SkIdentifier> & return_args, const SkInvokableBase & invokable_params);
       void data_remove_vars(const AVCompactArrayBase<ASymbol> & var_names, SkInstance * delay_collect_p);
       void data_remove_vars(uint32_t count, SkInstance * delay_collect_p);
@@ -363,6 +365,7 @@ class SkInvokedContextBase : public SkInvokedBase
 
       virtual SkInvokedContextBase * get_caller_context() const;
       virtual SkInvokedContextBase * get_scope_context() const;
+      virtual SkInstance *           find_data_by_name(const ASymbol & name) const override;
       virtual SkInstance *           get_data_by_name(const ASymbol & name) const;
       virtual void                   set_data_by_name(const ASymbol & name, SkInstance * obj_p);
 

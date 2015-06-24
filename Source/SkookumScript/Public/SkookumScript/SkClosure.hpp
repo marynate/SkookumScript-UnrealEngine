@@ -64,6 +64,7 @@ class SkClosure : public SkInstance
     virtual AString as_string_debug() const;
 
     virtual uint32_t     get_obj_type() const  { return SkObjectType_closure; } 
+    virtual SkInstance * find_data_by_name(const ASymbol & name) const override;
     virtual SkInstance * get_data_by_name(const ASymbol & name) const;
     virtual void         set_data_by_name(const ASymbol & name, SkInstance * obj_p);
     virtual SkInstance * get_topmost_scope() const;

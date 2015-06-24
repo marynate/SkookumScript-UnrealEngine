@@ -193,6 +193,7 @@ class SkMetaClass : public SkClassUnaryBase, public SkInstanceUnreffed
 
     // Overriding from SkObjectBase
 
+      virtual SkInstance * find_data_by_name(const ASymbol & name) const override;
       virtual SkInstance * get_data_by_name(const ASymbol & name) const;
       virtual void         set_data_by_name(const ASymbol & name, SkInstance * obj_p);
       virtual uint32_t     get_obj_type() const       { return SkObjectType_meta_class; } 

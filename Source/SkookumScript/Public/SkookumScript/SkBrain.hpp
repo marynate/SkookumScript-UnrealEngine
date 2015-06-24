@@ -89,7 +89,6 @@ class SkBrain
       static SkClass * ms_invoked_method_class_p;
       static SkClass * ms_invoked_coroutine_class_p;
       static SkClass * ms_list_class_p;
-      static SkClass * ms_none_class_p;
       static SkClass * ms_object_class_p;
       static SkClass * ms_real_class_p;
       static SkClass * ms_string_class_p;

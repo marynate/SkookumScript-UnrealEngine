@@ -213,6 +213,8 @@
   ASYMX(op_greater_or_equal, ">=") \
   ASYMX(op_less,             "<") \
   ASYMX(op_less_or_equal,    "<=") \
+  ASYMX(op_index,            "{}") \
+  ASYMX(op_index_set,        "{}:") \
   ASYMX(unnamed,             "?unnamed?") \
 
 

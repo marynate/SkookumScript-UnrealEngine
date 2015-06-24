@@ -94,6 +94,7 @@ class SkUERemote : public SkookumRemoteRuntimeBase
   // Events
 
     virtual void              on_cmd_send(const ADatum & datum) override;
+    virtual void              on_class_updated(SkClass * class_p) override;
 
   // Data Members
 

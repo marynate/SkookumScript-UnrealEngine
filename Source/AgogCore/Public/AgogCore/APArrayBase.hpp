@@ -90,6 +90,8 @@ class APArrayBase
 
     _ElementType ** get_array() const;
     _ElementType ** get_array_end() const;
+    _ElementType ** begin() const { return get_array(); } // So C++11 shorthands can be used on this
+    _ElementType ** end() const { return get_array_end(); }
     _ElementType *  get_at(uint32_t pos) const;
     _ElementType *  get_first() const;
     _ElementType *  get_last() const;

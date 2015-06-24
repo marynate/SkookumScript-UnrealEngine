@@ -2,7 +2,7 @@
 // SkookumScript C++ library.
 // Copyright (c) 2001-2015 Agog Labs Inc. All rights reserved.
 //
-// Special None class
+// Special None class for the single nil instance.
 //
 // Author: Conan Reis
 //=======================================================================================
@@ -16,8 +16,12 @@
 #include <SkookumScript/SkClassBindingAbstract.hpp>
 #include <SkookumScript/SkSymbolDefs.hpp>
 
+
+//=======================================================================================
+// Global Structures
+//=======================================================================================
+
 //---------------------------------------------------------------------------------------
-// 
 class SkNone : public SkClassBindingAbstract<SkNone>, public SkInstanceUnreffed
   {
   public:

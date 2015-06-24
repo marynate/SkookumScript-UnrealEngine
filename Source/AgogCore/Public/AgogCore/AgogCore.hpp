@@ -690,6 +690,10 @@ AString a_str_format(const char * format_cstr_p, ...);
 //---------------------------------------------------------------------------------------
 // Memory allocation declarations 
 
+#define a_align_up(x,align)                         (((x)+((align)-1)) & (-((int)(align))))
+#define	a_stack_allocate_aligned_bytes(size,align)	(uint8_t*)a_align_up((uintptr_t)alloca((size)+((align)-1)),align)
+#define a_stack_allocate(count,T)                   (T*)a_stack_allocate_aligned_bytes((count)*sizeof(T),(sizeof(T)<16&&(sizeof(T)&(sizeof(T)-1))==0)?sizeof(T):16) // If sizeof(T) is less than 16 and a power of two, use it for alignment, 16 otherwise
+
 // $Revisit - CReis These should probably be macros to allow for easier redefinition/memory tracking
 
 #ifdef A_PLAT_X360

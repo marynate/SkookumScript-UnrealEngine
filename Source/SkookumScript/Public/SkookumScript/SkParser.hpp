@@ -369,6 +369,7 @@ class SkParser : public AString
       Result_err_expected_method_ctor_name,   // A constructor method name must begin with an exclamation mark '!' and be optionally followed by an identifier starting with a lowercase letter.
       Result_err_expected_method_name,        // A method name must begin with a lowercase letter or an exclamation mark '!'
       Result_err_expected_named_arg,          // Expected a named argument specifier identifier# and did not find one.
+      Result_err_expected_op_index_end,       // Expected index operator ending curly bracket/brace `}` and did not find one.
       Result_err_expected_operator,           // Expected an operator method call, but did not find one
       Result_err_expected_obj_id,             // Expected an operator id, but did not find the '@', '@?' or '@='symbols.
       Result_err_expected_parameters,         // A parameter list must start with an opening parenthesis (bracket) '('

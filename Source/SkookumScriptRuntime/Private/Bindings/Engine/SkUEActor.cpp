@@ -27,13 +27,15 @@ namespace SkUEActor_Impl
   // Helper function
   static UClass * get_actor_array(TArray<UObject*> * object_array_p, SkClass * class_p)
     {
-    UClass ** uclass_pp = SkUEClassBindingHelper::ms_class_map_s2u.Find(class_p);
-    SK_ASSERTX(uclass_pp, a_cstr_format("Class '%s' not found in ms_class_map_s2u. All actor classes must be present.", class_p->get_name_cstr_dbg()));
-    if (!uclass_pp) { return nullptr; }
-    EObjectFlags exclude_flags = RF_ClassDefaultObject | RF_PendingKill;
-    object_array_p->Reserve(1024);
-    GetObjectsOfClass(*uclass_pp, *object_array_p, true, exclude_flags);
-    return *uclass_pp;
+    UClass * uclass_p = SkUEClassBindingHelper::get_ue_class_from_sk_class(class_p);
+    SK_ASSERTX(uclass_p, a_cstr_format("Class '%s' not found. All actor classes must be present.", class_p->get_name_cstr_dbg()));
+    if (uclass_p)
+      {
+      EObjectFlags exclude_flags = RF_ClassDefaultObject | RF_PendingKill;
+      object_array_p->Reserve(1024);
+      GetObjectsOfClass(uclass_p, *object_array_p, true, exclude_flags);
+      }
+    return uclass_p;
     }
 
   //---------------------------------------------------------------------------------------

@@ -107,4 +107,8 @@ Vector4!
 7000.0 * 0.803
 
 this_code.data_by_name('@@random')
-
+!vec: Vector3!
+!rot: RotationAngles!
+Actor.named("RoboChar1").actor_eyes_view_point(vec rot)
+rot
+7 * 5.0

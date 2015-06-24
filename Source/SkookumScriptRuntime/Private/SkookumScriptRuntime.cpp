@@ -11,6 +11,7 @@
 #include "Bindings/SkUEBindings.hpp"
 #include "Bindings/SkUERuntime.hpp"
 #include "Bindings/SkUERemote.hpp"
+#include "Bindings/SkUEBlueprintInterface.hpp"
 
 #include "Runtime/Launch/Resources/Version.h"
 #include "Runtime/Engine/Public/Tickable.h"
@@ -60,7 +61,8 @@ class FSkookumScriptRuntime : public ISkookumScriptRuntime, public FTickableGame
 
     // Data Members
 
-    SkUERuntime  m_runtime;
+    SkUERuntime             m_runtime;
+    SkUEBlueprintInterface  m_blueprint_interface;
 
     #ifdef SKOOKUM_REMOTE_UNREAL
       SkUERemote m_remote_client;
@@ -426,7 +428,9 @@ void FSkookumScriptRuntime::StartupModule()
   // Start up SkookumScript
   m_runtime.on_init();
 
-  //FSkookumScriptObjectReferencer::Init();
+  // Expose functions to blueprints
+  m_blueprint_interface.reinitialize_all();
+
   }
 
 //---------------------------------------------------------------------------------------
@@ -441,7 +445,9 @@ void FSkookumScriptRuntime::OnWorldInitPre(UWorld * world_p, const UWorld::Initi
   {
   //A_DPRINT("OnWorldInitPre: %S %p\n", *world_p->GetName(), world_p);
 
-  SkUERemote::ms_client_p->ensure_connected();
+  #ifdef SKOOKUM_REMOTE_UNREAL
+    SkUERemote::ms_client_p->ensure_connected();
+  #endif
 
   if (world_p->IsGameWorld())
     {
@@ -497,8 +503,6 @@ void FSkookumScriptRuntime::ShutdownModule()
     // Remote communication to and from SkookumScript IDE
     m_remote_client.disconnect();
   #endif
-
-  //FSkookumScriptObjectReferencer::Shutdown();
   }
 
 //---------------------------------------------------------------------------------------

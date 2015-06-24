@@ -241,6 +241,7 @@ class SkookumRemoteBase
     void set_connect_state(eConnectState state);
 
     virtual void on_connect_change(eConnectState old_state);
+    virtual void on_class_updated(SkClass * class_p);
 
   // Data Members
 
