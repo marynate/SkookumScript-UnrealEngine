@@ -108,8 +108,8 @@ class SkParameters : public ARefCountMix<SkParameters>
     #endif
 
     SkParameters &             assign(SkParameters * parms_p);
-    uint                        get_arg_count_min() const;
-    uint                        get_arg_count_min_after_arg1() const;
+    uint                       get_arg_count_min() const;
+    uint                       get_arg_count_min_after_arg1() const;
     const tSkParamList &       get_param_list() const                 { return m_params; }
     const tSkParamReturnList & get_param_return_list() const          { return m_return_params; }
     SkClassDescBase *          get_result_class() const;

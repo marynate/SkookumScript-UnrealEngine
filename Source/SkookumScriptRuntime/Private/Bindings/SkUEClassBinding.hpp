@@ -21,15 +21,26 @@ class SkUEClassBindingHelper
   {
   public:
     
-    static TMap<UClass*, SkClass*> ms_class_map_u2s; // Maps UClasses to their respective SkClasses
-    static TMap<SkClass*, UClass*> ms_class_map_s2u; // Maps SkClasses to their respective UClasses
-
     static UWorld *     get_world(); // Get tha world
 
+    static void         reset_static_class_mappings(uint32_t reserve);
+    static void         add_static_class_mapping(SkClass * sk_class_p, UClass * ue_class_p);
+    static SkClass *    get_sk_class_from_ue_class(UClass * ue_class_p);
+    static UClass *     get_ue_class_from_sk_class(SkClassDescBase * sk_class_p);
     static SkClass *    get_object_class(UObject * obj_p, UClass * def_uclass_p = nullptr, SkClass * def_class_p = nullptr); // Determine SkookumScript class from UClass
     static SkInstance * get_actor_component_instance(AActor * actor_p); // Return SkInstance of an actor's SkookumScriptComponent if present, nullptr otherwise
 
     static UProperty *  find_class_property(UClass * class_p, FName property_name);
+
+  protected:
+
+    static UClass *     add_dynamic_class_mapping(SkClassDescBase * sk_class_desc_p);
+    static SkClass *    add_dynamic_class_mapping(UClass * ue_class_p);
+
+    static TMap<UClass*, SkClass*>                        ms_static_class_map_u2s; // Maps UClasses to their respective SkClasses
+    static TMap<SkClassDescBase*, UClass*>                ms_static_class_map_s2u; // Maps SkClasses to their respective UClasses
+    static TMap<UClass*, SkClass*>                        ms_dynamic_class_map_u2s; // Maps UClasses to their respective SkClasses
+    static TMap<SkClassDescBase*, TWeakObjectPtr<UClass>> ms_dynamic_class_map_s2u; // Maps SkClasses to their respective UClasses
 
   };
 
@@ -135,3 +146,30 @@ class SkClassBindingSimpleForceInit : public SkClassBindingBase<_BindingClass, _
 // Pointer to the UClass belonging to this binding
 template<class _BindingClass, class _UObjectType>
 UClass * SkUEClassBindingEntity<_BindingClass, _UObjectType>::ms_uclass_p = nullptr;
+
+//=======================================================================================
+// Inline Function Definitions
+//=======================================================================================
+
+//---------------------------------------------------------------------------------------
+
+inline SkClass * SkUEClassBindingHelper::get_sk_class_from_ue_class(UClass * ue_class_p)
+  {
+  SkClass ** sk_class_pp = ms_static_class_map_u2s.Find(ue_class_p);
+  if (sk_class_pp) return *sk_class_pp;
+  sk_class_pp = ms_dynamic_class_map_u2s.Find(ue_class_p);
+  if (sk_class_pp) return *sk_class_pp;
+  return add_dynamic_class_mapping(ue_class_p);
+  }
+
+//---------------------------------------------------------------------------------------
+
+inline UClass * SkUEClassBindingHelper::get_ue_class_from_sk_class(SkClassDescBase * sk_class_p)
+  {
+  UClass ** ue_class_pp = ms_static_class_map_s2u.Find(sk_class_p);
+  if (ue_class_pp) return *ue_class_pp;
+  TWeakObjectPtr<UClass> * ue_class_obj_pp = ms_dynamic_class_map_s2u.Find(sk_class_p);
+  if (ue_class_obj_pp) return ue_class_obj_pp->Get();
+  return add_dynamic_class_mapping(sk_class_p);
+  }
+

@@ -91,7 +91,7 @@ void SkookumScriptListenerManager::grow_inactive_list(uint32_t pool_incr)
   m_inactive_list.ensure_size(m_inactive_list.get_length() + pool_incr);
   for (uint32_t i = 0; i < pool_incr; ++i)
     {
-    m_inactive_list.append(*NewObject<USkookumScriptListener>());
+    m_inactive_list.append(*NewObject<USkookumScriptListener>((UObject*)GetTransientPackage(), NAME_None, RF_RootSet)); // RF_RootSet so it won't be garbage collected
     }
   m_active_list.ensure_size(m_inactive_list.get_length());
   }

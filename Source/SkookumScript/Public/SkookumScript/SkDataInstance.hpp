@@ -56,6 +56,7 @@ class SkDataInstance : public SkInstance
 
     // Overriding from SkObjectBase
 
+    virtual SkInstance * find_data_by_name(const ASymbol & name) const override;
     virtual SkInstance * get_data_by_name(const ASymbol & name) const override;
     virtual void         set_data_by_name(const ASymbol & name, SkInstance * obj_p);
 

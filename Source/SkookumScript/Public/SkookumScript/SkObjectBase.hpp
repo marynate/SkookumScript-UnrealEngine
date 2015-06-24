@@ -112,11 +112,11 @@ struct SkData : public ANamed
 //---------------------------------------------------------------------------------------
 // Root object abstract base class for all Skookum "instances".
 //
-// #Notes
+// Notes:
 //   AIdPtr<SkObjectBase> can be used as a smart pointer for this class and any of its
 //   subclasses.
 //
-// #Subclasses
+// Subclasses:
 //   SkInstance(SkBoolean, SkClosure, SkDataInstance(SkActor),
 //   SkInstanceUnreffed(SkMetaClass)), SkInvokedBase(SkInvokedExpression,
 //   SkInvokedContextBase(SkInvokedMethod, SkInvokedCoroutine))
@@ -144,7 +144,8 @@ class SkObjectBase
 
     // Data methods
 
-      virtual SkInstance *           as_instance() const;
+      virtual SkInstance *           as_new_instance() const;
+      virtual SkInstance *           find_data_by_name(const ASymbol & name) const = 0;
       virtual SkInstance *           get_data_by_name(const ASymbol & name) const = 0;
       virtual void                   set_data_by_name(const ASymbol & name, SkInstance * obj_p) = 0;
       virtual SkInvokedContextBase * get_scope_context() const;

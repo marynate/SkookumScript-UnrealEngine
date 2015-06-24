@@ -781,10 +781,12 @@ A_INLINE eSkClassType SkClassUnion::get_class_type() const
 
 //---------------------------------------------------------------------------------------
 // Returns class type of data member
-// Returns:    class type of data member
-// Arg         data_name - name of data member
-// Modifiers:   virtual - overridden from SkClassDescBase
-// Author(s):   Conan Reis
+// 
+// Returns: class type of data member
+// 
+// Params:
+//   data_name: name of data member
+//   scope_p: address to store 
 A_INLINE SkClassDescBase * SkClassUnion::get_data_type(
   const ASymbol & data_name,
   eSkScope *      scope_p // = nullptr

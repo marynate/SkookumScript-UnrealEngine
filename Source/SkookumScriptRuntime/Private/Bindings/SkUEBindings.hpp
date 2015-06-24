@@ -19,5 +19,9 @@ class SkUEBindings
 
     static void register_all();
 
+  protected:
+
+    static void gather_dynamic_classes_recursively(SkClass * class_p);
+
   }; // SkUEBindings
 

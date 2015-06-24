@@ -14,8 +14,10 @@
 
 //---------------------------------------------------------------------------------------
 
-TMap<UClass*, SkClass*> SkUEClassBindingHelper::ms_class_map_u2s;
-TMap<SkClass*, UClass*> SkUEClassBindingHelper::ms_class_map_s2u;
+TMap<UClass*, SkClass*>                         SkUEClassBindingHelper::ms_static_class_map_u2s;
+TMap<SkClassDescBase*, UClass*>                 SkUEClassBindingHelper::ms_static_class_map_s2u;
+TMap<SkClassDescBase*, TWeakObjectPtr<UClass>>  SkUEClassBindingHelper::ms_dynamic_class_map_s2u;
+TMap<UClass*, SkClass*>                         SkUEClassBindingHelper::ms_dynamic_class_map_u2s;
 
 //---------------------------------------------------------------------------------------
 // Get pointer to UWorld from global variable
@@ -53,16 +55,13 @@ SkClass * SkUEClassBindingHelper::get_object_class(UObject * obj_p, UClass * def
     if (obj_uclass_p != def_uclass_p)
       {
       // Crawl up class hierarchy until we find a class known to Sk
-      SkClass ** class_pp = nullptr;
-      for (; !class_pp && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
+      SkClass * obj_class_p = nullptr;
+      for (; !obj_class_p && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
         {
-        class_pp = ms_class_map_u2s.Find(obj_uclass_p);
-        //SK_ASSERTX(class_pp, "Unknown object class!"); // UE classes can be specific to projects and thus not known to Sk
+        obj_class_p = get_sk_class_from_ue_class(obj_uclass_p);
         }
-      if (class_pp)
-        {
-        class_p = *class_pp;
-        }
+      SK_ASSERTX(obj_class_p, a_str_format("UObject of type '%S' has no matching SkookumScript type!", *obj_p->GetClass()->GetName()));
+      class_p = obj_class_p;
       }
     }
 
@@ -99,4 +98,71 @@ UProperty * SkUEClassBindingHelper::find_class_property(UClass * class_p, FName 
       }
     }
   return nullptr;
+  }
+
+//---------------------------------------------------------------------------------------
+
+void SkUEClassBindingHelper::reset_static_class_mappings(uint32_t reserve)
+  {
+  ms_static_class_map_u2s.Reset();
+  ms_static_class_map_s2u.Reset();
+  ms_static_class_map_u2s.Reserve(reserve);
+  ms_static_class_map_s2u.Reserve(reserve);
+  }
+
+//---------------------------------------------------------------------------------------
+
+void SkUEClassBindingHelper::add_static_class_mapping(SkClass * sk_class_p, UClass * ue_class_p)
+  {
+  ms_static_class_map_u2s.Add(ue_class_p, sk_class_p);
+  ms_static_class_map_s2u.Add(sk_class_p, ue_class_p);
+  }
+
+//---------------------------------------------------------------------------------------
+
+UClass * SkUEClassBindingHelper::add_dynamic_class_mapping(SkClassDescBase * sk_class_desc_p)
+  {
+  // Get fully derived SkClass
+  SkClass * sk_class_p = sk_class_desc_p->get_key_class();
+
+  // Try to find a match by name
+  FString class_name(sk_class_p->get_name_cstr());
+  UClass * ue_class_p = FindObject<UClass>(ANY_PACKAGE, *class_name);
+  if (!ue_class_p)
+    {
+    // If not found, try class name + "_C"
+    ue_class_p = FindObject<UClass>(ANY_PACKAGE, *(class_name + TEXT("_C")));
+    }
+  // If found, add to map of known class equivalences
+  if (ue_class_p)
+    {
+    ms_dynamic_class_map_u2s.Add(ue_class_p, sk_class_p);
+    ms_dynamic_class_map_s2u.Add(sk_class_p, ue_class_p);
+    }
+
+  return ue_class_p;
+  }
+
+//---------------------------------------------------------------------------------------
+
+SkClass * SkUEClassBindingHelper::add_dynamic_class_mapping(UClass * ue_class_p)
+  {
+  // Try to find a match by name
+  AString class_name(*ue_class_p->GetName(), ue_class_p->GetName().Len());
+  SkClass * sk_class_p = SkBrain::get_class(ASymbol::create(class_name, ATerm_short));
+  uint32_t find_pos = 0;
+  if (!sk_class_p && class_name.find_reverse("_C", 1, &find_pos) && find_pos == class_name.get_length() - 2)
+    {
+    // If not found, try class name without the "_C"
+    class_name.set_length(class_name.get_length() - 2);
+    sk_class_p = SkBrain::get_class(ASymbol::create(class_name, ATerm_short));
+    }
+  // If found, add to map of known class equivalences
+  if (sk_class_p)
+    {
+    ms_dynamic_class_map_u2s.Add(ue_class_p, sk_class_p);
+    ms_dynamic_class_map_s2u.Add(sk_class_p, ue_class_p);
+    }
+
+  return sk_class_p;
   }
