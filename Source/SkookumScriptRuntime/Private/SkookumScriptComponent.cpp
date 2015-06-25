@@ -83,7 +83,7 @@ void USkookumScriptComponent::OnRegister()
       {
     set_default_class:
       // Find most derived UE4 class known to SkookumScript
-      SkClass * class_p = nullptr;
+      class_p = nullptr;
       for (UClass * obj_uclass_p = actor_p->GetClass(); !class_p && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
         {
         class_p = SkUEClassBindingHelper::get_sk_class_from_ue_class(obj_uclass_p);
