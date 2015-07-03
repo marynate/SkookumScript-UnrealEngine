@@ -460,19 +460,16 @@ void SkUEBlueprintInterface::delete_method_entry(uint32_t method_index)
     {
     UFunction * ue_method_p = method_entry_p->m_ue_method_p.Get();
     UClass * ue_class_p = ue_method_p->GetOwnerClass();
-    if (ue_class_p)
+    // Unlink from its owner class
+    ue_class_p->RemoveFunctionFromFunctionMap(ue_method_p);
+    // Unlink from the Children list as well
+    UField ** prev_field_pp = &ue_class_p->Children;
+    for (UField * field_p = *prev_field_pp; field_p; prev_field_pp = &field_p->Next, field_p = *prev_field_pp)
       {
-      // Unlink from its owner class
-      ue_class_p->RemoveFunctionFromFunctionMap(ue_method_p);
-      // Unlink from the Children list as well
-      UField ** prev_field_pp = &ue_class_p->Children;
-      for (UField * field_p = *prev_field_pp; field_p; prev_field_pp = &field_p->Next, field_p = *prev_field_pp)
+      if (field_p == ue_method_p)
         {
-        if (field_p == ue_method_p)
-          {
-          *prev_field_pp = field_p->Next;
-          break;
-          }
+        *prev_field_pp = field_p->Next;
+        break;
         }
       }
     // Destroy the function along with its attached properties
