@@ -35,12 +35,12 @@ class SkUEClassBindingHelper
   protected:
 
     static UClass *     add_dynamic_class_mapping(SkClassDescBase * sk_class_desc_p);
-    static SkClass *    add_dynamic_class_mapping(UClass * ue_class_p);
+    static SkClass *    add_dynamic_class_mapping(UBlueprint * blueprint_p);
 
-    static TMap<UClass*, SkClass*>                        ms_static_class_map_u2s; // Maps UClasses to their respective SkClasses
-    static TMap<SkClassDescBase*, UClass*>                ms_static_class_map_s2u; // Maps SkClasses to their respective UClasses
-    static TMap<UClass*, SkClass*>                        ms_dynamic_class_map_u2s; // Maps UClasses to their respective SkClasses
-    static TMap<SkClassDescBase*, TWeakObjectPtr<UClass>> ms_dynamic_class_map_s2u; // Maps SkClasses to their respective UClasses
+    static TMap<UClass*, SkClass*>                            ms_static_class_map_u2s; // Maps UClasses to their respective SkClasses
+    static TMap<SkClassDescBase*, UClass*>                    ms_static_class_map_s2u; // Maps SkClasses to their respective UClasses
+    static TMap<UBlueprint*, SkClass*>                        ms_dynamic_class_map_u2s; // Maps Blueprints to their respective SkClasses
+    static TMap<SkClassDescBase*, TWeakObjectPtr<UBlueprint>> ms_dynamic_class_map_s2u; // Maps SkClasses to their respective Blueprints
 
   };
 
@@ -55,9 +55,10 @@ class SkUEWeakObjectPtr
     SkUEWeakObjectPtr() {}
     SkUEWeakObjectPtr(_UObjectType * obj_p) : m_ptr(obj_p) {}
 
-    bool is_valid() const            { return m_ptr.IsValid(); }
-    _UObjectType * get_obj() const   { return m_ptr.Get(); }
-    operator _UObjectType * () const { return m_ptr.Get(); } // Cast myself to UObject pointer so it can be directly assigned to UObject pointer
+    bool is_valid() const               { return m_ptr.IsValid(); }
+    _UObjectType * get_obj() const      { return m_ptr.Get(); }
+    operator _UObjectType * () const    { return m_ptr.Get(); } // Cast myself to UObject pointer so it can be directly assigned to UObject pointer
+    _UObjectType * operator -> () const { return m_ptr.Get(); }
 
   protected:
     TWeakObjectPtr<_UObjectType>  m_ptr;
@@ -155,21 +156,36 @@ UClass * SkUEClassBindingEntity<_BindingClass, _UObjectType>::ms_uclass_p = null
 
 inline SkClass * SkUEClassBindingHelper::get_sk_class_from_ue_class(UClass * ue_class_p)
   {
+  // First see if it's a known static (Engine) class
   SkClass ** sk_class_pp = ms_static_class_map_u2s.Find(ue_class_p);
   if (sk_class_pp) return *sk_class_pp;
-  sk_class_pp = ms_dynamic_class_map_u2s.Find(ue_class_p);
+  // If not, it might be a dynamic (Blueprint) class
+  UBlueprintGeneratedClass * blueprint_class_p = Cast<UBlueprintGeneratedClass>(ue_class_p);
+  if (!blueprint_class_p) return nullptr;
+  UBlueprint * blueprint_p = Cast<UBlueprint>(blueprint_class_p->ClassGeneratedBy);
+  if (!blueprint_p) return nullptr;
+  // It's a blueprint class, see if we know it already
+  sk_class_pp = ms_dynamic_class_map_u2s.Find(blueprint_p);
   if (sk_class_pp) return *sk_class_pp;
-  return add_dynamic_class_mapping(ue_class_p);
+  // (Yet) unknown, try to look it up by name and add to map
+  return add_dynamic_class_mapping(blueprint_p);
   }
 
 //---------------------------------------------------------------------------------------
 
 inline UClass * SkUEClassBindingHelper::get_ue_class_from_sk_class(SkClassDescBase * sk_class_p)
   {
+  // First see if it's a known static (Engine) class
   UClass ** ue_class_pp = ms_static_class_map_s2u.Find(sk_class_p);
   if (ue_class_pp) return *ue_class_pp;
-  TWeakObjectPtr<UClass> * ue_class_obj_pp = ms_dynamic_class_map_s2u.Find(sk_class_p);
-  if (ue_class_obj_pp) return ue_class_obj_pp->Get();
+  // If not, see if it's a known dynamic (Blueprint) class
+  TWeakObjectPtr<UBlueprint> * blueprint_pp = ms_dynamic_class_map_s2u.Find(sk_class_p);
+  if (blueprint_pp)
+    {
+    UBlueprint * blueprint_p = blueprint_pp->Get();
+    if (blueprint_p) return blueprint_p->GeneratedClass;
+    }
+  // (Yet) unknown (or blueprint was rebuilt/reloaded), try to look it up by name and add to map
   return add_dynamic_class_mapping(sk_class_p);
   }
 

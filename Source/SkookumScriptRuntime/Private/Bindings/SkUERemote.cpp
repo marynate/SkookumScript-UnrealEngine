@@ -42,7 +42,8 @@ namespace
 // #Author(s): Conan Reis
 SkUERemote::SkUERemote() :
   m_socket_p(nullptr),
-  m_data_idx(ADef_uint32)
+  m_data_idx(ADef_uint32),
+  m_editor_interface_p(nullptr)
   {
   }
 
@@ -290,13 +291,15 @@ void SkUERemote::on_cmd_send(const ADatum & datum)
 //---------------------------------------------------------------------------------------
 void SkUERemote::on_class_updated(SkClass * class_p)
   {
-#if 0 // Disabled as it currently does not quite work right yet
-  UClass * uclass_p = SkUEBlueprintInterface::get()->reinitialize_class(class_p);
-  if (uclass_p)
+  // Only care to do anything if editor is present
+  if (m_editor_interface_p)
     {
-    //FBlueprintActionDatabase::Get().RefreshClassActions(uclass_p);
+    UClass * uclass_p = SkUEBlueprintInterface::get()->reinitialize_class(class_p);
+    if (uclass_p)
+      {
+      m_editor_interface_p->on_class_updated(class_p, uclass_p);
+      }
     }
-#endif
   }
 
 //---------------------------------------------------------------------------------------
@@ -310,6 +313,12 @@ void SkUERemote::wait_for_update()
   {
   FPlatformProcess::Sleep(.1f);
   process_incoming();
+  }
+
+//---------------------------------------------------------------------------------------
+void SkUERemote::set_editor_interface(ISkookumScriptRuntimeEditorInterface * editor_interface_p)
+  {
+  m_editor_interface_p = editor_interface_p;
   }
 
 //---------------------------------------------------------------------------------------

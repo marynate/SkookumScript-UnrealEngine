@@ -53,27 +53,10 @@ void SkUEBindings::register_all()
 
   // Engine-Generated Overlay
   SkUE::register_bindings();
-  gather_dynamic_classes_recursively(SkUEEntity::ms_class_p);
 
   // Engine Overlay
   SkUEEntity_Ext::register_bindings();
   SkUEEntityClass_Ext::register_bindings();
   SkUEActor_Ext::register_bindings();
   SkUEName::register_bindings();
-  }
-
-//---------------------------------------------------------------------------------------
-// Detect dynamic Blueprint classes unknown to SkookumScriptGenerator
-// and add to the Sk<>UE class map
-void SkUEBindings::gather_dynamic_classes_recursively(SkClass * class_p)
-  {
-  // Look it up, that will add it to the map if yet unknown
-  SkUEClassBindingHelper::get_ue_class_from_sk_class(class_p);
-
-  // Gather sub classes
-  const tSkClasses & sub_classes = class_p->get_subclasses();
-  for (uint32_t i = 0; i < sub_classes.get_length(); ++i)
-    {
-    gather_dynamic_classes_recursively(sub_classes(i));
-    }
   }

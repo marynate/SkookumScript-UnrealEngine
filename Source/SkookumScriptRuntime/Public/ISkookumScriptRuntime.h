@@ -4,41 +4,39 @@
 //
 // Main entry point for the SkookumScript runtime plugin
 // 
-// Author: Conan Reis
+// Author: Markus Breyer
 //=======================================================================================
 
 #pragma once
 
 #include "ModuleManager.h"
 
-/**
- * The public interface to this module.  In most cases, this interface is only public to sibling modules 
- * within this plugin.
- */
+class SkClass;
+class UClass;
+
+//---------------------------------------------------------------------------------------
+// Interface class for the runtime plugin to call the editor plugin
+class ISkookumScriptRuntimeEditorInterface
+  {
+  public:
+
+    virtual void on_class_updated(SkClass * sk_class_p, UClass * ue_class_p) = 0;
+
+  };
+
+
+//---------------------------------------------------------------------------------------
+// The public interface to this module
 class ISkookumScriptRuntime : public IModuleInterface
-{
+  {
+  public:
 
-public:
+    // Methods
 
-	/**
-	 * Singleton-like access to this module's interface.  This is just for convenience!
-	 * Beware of calling this during the shutdown phase, though.  Your module might have been unloaded already.
-	 *
-	 * @return Returns singleton instance, loading the module on demand if needed
-	 */
-	static inline ISkookumScriptRuntime& Get()
-	{
-		return FModuleManager::LoadModuleChecked<ISkookumScriptRuntime>("SkookumScriptRuntime");
-	}
+    virtual void  set_editor_interface(ISkookumScriptRuntimeEditorInterface * editor_interface_p) = 0;
 
-	/**
-	 * Checks to see if this module is loaded and ready.  It is only valid to call Get() if IsAvailable() returns true.
-	 *
-	 * @return True if the module is loaded and ready to use
-	 */
-	static inline bool IsAvailable()
-	{
-		return FModuleManager::Get().IsModuleLoaded("SkookumScriptRuntime");
-	}
-};
+    virtual bool  is_skookum_blueprint_function(UFunction * function_p) const = 0;
+    virtual bool  is_skookum_blueprint_event(UFunction * function_p) const = 0;
+
+  };
 

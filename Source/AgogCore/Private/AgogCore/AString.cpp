@@ -73,7 +73,7 @@ AString::AString(
 
   uint32_t length = uint32_t(::strlen(cstr_p));
 
-  m_str_ref_p = (persistent)
+  m_str_ref_p = ((persistent) && (cstr_p[length] == '\0'))
     ? AStringRef::pool_new(cstr_p, length, length + 1u, 1u, false, true)
     : AStringRef::pool_new_copy(cstr_p, length);
   }
@@ -119,7 +119,7 @@ AString::AString(
     length = uint32_t(::strlen(cstr_p));
     }
 
-  m_str_ref_p = (persistent)
+  m_str_ref_p = ((persistent) && (cstr_p[length] == '\0'))
     ? AStringRef::pool_new(cstr_p, length, length + 1u, 1u, false, true)
     : AStringRef::pool_new_copy(cstr_p, length);
   }

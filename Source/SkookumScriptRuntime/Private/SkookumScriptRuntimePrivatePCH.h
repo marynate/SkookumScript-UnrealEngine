@@ -40,6 +40,7 @@
 #include <SkookumScript/SkClosure.hpp>
 #include <SkookumScript/SkMind.hpp>
 #include <SkookumScript/SkParser.hpp>
+#include <SkookumScript/SkObject.hpp>
 #include <SkookumScript/SkDebug.hpp>
 
 #include "Bindings/SkUESymbol.hpp"

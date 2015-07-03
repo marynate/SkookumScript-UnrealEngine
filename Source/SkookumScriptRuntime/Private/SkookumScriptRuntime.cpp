@@ -29,9 +29,11 @@ class FSkookumScriptRuntime : public ISkookumScriptRuntime, public FTickableGame
   {
   public:
 
-  // Methods
-
     FSkookumScriptRuntime();
+
+  protected:
+
+  // Methods
 
     // Overridden from IModuleInterface
 
@@ -48,21 +50,23 @@ class FSkookumScriptRuntime : public ISkookumScriptRuntime, public FTickableGame
     virtual void    Tick(float deltaTime) override;
     virtual TStatId GetStatId() const override;
 
-    void            OnWorldInitPre(UWorld * world_p, const UWorld::InitializationValues init_vals);
-    void            OnWorldCleanup(UWorld * world_p, bool session_ended_b, bool cleanup_resources_b);
+    // Local methods
 
-    // Class Methods
+    void          on_world_init_pre(UWorld * world_p, const UWorld::InitializationValues init_vals);
+    void          on_world_init_post(UWorld * world_p, const UWorld::InitializationValues init_vals);
+    void          on_world_cleanup(UWorld * world_p, bool session_ended_b, bool cleanup_resources_b);
+    void          on_asset_loaded(UObject * new_object_p);
 
-  protected:
+    void          set_game_world(UWorld * world_p);
 
-    // Methods
+    virtual void  set_editor_interface(ISkookumScriptRuntimeEditorInterface * editor_interface_p);
+    virtual bool  is_skookum_blueprint_function(UFunction * function_p) const override;
+    virtual bool  is_skookum_blueprint_event(UFunction * function_p) const override;
 
-    void set_game_world(UWorld * world_p);
+  // Data Members
 
-    // Data Members
-
-    SkUERuntime             m_runtime;
-    SkUEBlueprintInterface  m_blueprint_interface;
+    SkUERuntime                             m_runtime;
+    ISkookumScriptRuntimeEditorInterface *  m_editor_interface_p;
 
     #ifdef SKOOKUM_REMOTE_UNREAL
       SkUERemote m_remote_client;
@@ -70,8 +74,10 @@ class FSkookumScriptRuntime : public ISkookumScriptRuntime, public FTickableGame
 
     UWorld *          m_game_world_p;
 
-    FWorldDelegates::FWorldInitializationEvent::FDelegate   m_on_world_init_pre_delegate;
-    FWorldDelegates::FWorldCleanupEvent::FDelegate          m_on_world_cleanup_delegate;
+    FDelegateHandle   m_on_world_init_pre_handle;
+    FDelegateHandle   m_on_world_init_post_handle;
+    FDelegateHandle   m_on_world_cleanup_handle;
+    FDelegateHandle   m_on_asset_loaded_handle;
   };
 
 
@@ -400,7 +406,8 @@ namespace Skookum
 
 //---------------------------------------------------------------------------------------
 FSkookumScriptRuntime::FSkookumScriptRuntime()
-  : m_game_world_p(nullptr)
+  : m_editor_interface_p(nullptr)
+  , m_game_world_p(nullptr)
   {
   //m_runtime.set_compiled_path("Scripts" SK_BITS_ID "\\");
   }
@@ -415,11 +422,15 @@ void FSkookumScriptRuntime::StartupModule()
   // Note that FWorldDelegates::OnPostWorldCreation has world_p->WorldType set to None
   // Note that FWorldDelegates::OnPreWorldFinishDestroy has world_p->GetName() set to "None"
 
-  m_on_world_init_pre_delegate = FWorldDelegates::FWorldInitializationEvent::FDelegate::CreateRaw(this, &FSkookumScriptRuntime::OnWorldInitPre);
-  m_on_world_cleanup_delegate = FWorldDelegates::FWorldCleanupEvent::FDelegate::CreateRaw(this, &FSkookumScriptRuntime::OnWorldCleanup);
+  auto on_world_init_pre_delegate = FWorldDelegates::FWorldInitializationEvent::FDelegate::CreateRaw(this, &FSkookumScriptRuntime::on_world_init_pre);
+  auto on_world_init_post_delegate = FWorldDelegates::FWorldInitializationEvent::FDelegate::CreateRaw(this, &FSkookumScriptRuntime::on_world_init_post);
+  auto on_world_cleanup_delegate = FWorldDelegates::FWorldCleanupEvent::FDelegate::CreateRaw(this, &FSkookumScriptRuntime::on_world_cleanup);
+  auto on_asset_loaded_delegate = FCoreUObjectDelegates::FOnAssetLoaded::FDelegate::CreateRaw(this, &FSkookumScriptRuntime::on_asset_loaded);
 
-  FWorldDelegates::OnPreWorldInitialization.Add(m_on_world_init_pre_delegate);
-  FWorldDelegates::OnWorldCleanup.Add(m_on_world_cleanup_delegate);
+  m_on_world_init_pre_handle = FWorldDelegates::OnPreWorldInitialization.Add(on_world_init_pre_delegate);
+  m_on_world_init_post_handle = FWorldDelegates::OnPostWorldInitialization.Add(on_world_init_post_delegate);
+  m_on_world_cleanup_handle = FWorldDelegates::OnWorldCleanup.Add(on_world_cleanup_delegate);
+  m_on_asset_loaded_handle = FCoreUObjectDelegates::OnAssetLoaded.Add(on_asset_loaded_delegate);
 
   // Hook up Unreal memory allocator
   AMemory::override_functions(&Agog::malloc_func, &Agog::free_func, &Agog::req_byte_size_func);
@@ -427,10 +438,6 @@ void FSkookumScriptRuntime::StartupModule()
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Start up SkookumScript
   m_runtime.on_init();
-
-  // Expose functions to blueprints
-  m_blueprint_interface.reinitialize_all();
-
   }
 
 //---------------------------------------------------------------------------------------
@@ -441,9 +448,9 @@ void FSkookumScriptRuntime::PostLoadCallback()
   }
 
 //---------------------------------------------------------------------------------------
-void FSkookumScriptRuntime::OnWorldInitPre(UWorld * world_p, const UWorld::InitializationValues init_vals)
+void FSkookumScriptRuntime::on_world_init_pre(UWorld * world_p, const UWorld::InitializationValues init_vals)
   {
-  //A_DPRINT("OnWorldInitPre: %S %p\n", *world_p->GetName(), world_p);
+  //A_DPRINT("on_world_init_pre: %S %p\n", *world_p->GetName(), world_p);
 
   #ifdef SKOOKUM_REMOTE_UNREAL
     SkUERemote::ms_client_p->ensure_connected();
@@ -457,9 +464,15 @@ void FSkookumScriptRuntime::OnWorldInitPre(UWorld * world_p, const UWorld::Initi
   }
 
 //---------------------------------------------------------------------------------------
-void FSkookumScriptRuntime::OnWorldCleanup(UWorld * world_p, bool session_ended_b, bool cleanup_resources_b)
+void FSkookumScriptRuntime::on_world_init_post(UWorld * world_p, const UWorld::InitializationValues init_vals)
   {
-  //A_DPRINT("OnWorldCleanup: %S %p\n", *world_p->GetName(), world_p);
+  //A_DPRINT("on_world_init_post: %S %p\n", *world_p->GetName(), world_p);
+  }
+
+//---------------------------------------------------------------------------------------
+void FSkookumScriptRuntime::on_world_cleanup(UWorld * world_p, bool session_ended_b, bool cleanup_resources_b)
+  {
+  //A_DPRINT("on_world_cleanup: %S %p\n", *world_p->GetName(), world_p);
 
   if (world_p->IsGameWorld())
     {
@@ -478,6 +491,22 @@ void FSkookumScriptRuntime::OnWorldCleanup(UWorld * world_p, bool session_ended_
     SkookumScript::deinitialize_session();
     SkookumScript::initialize_session();
     A_DPRINT("  ...done!\n\n");
+    }
+  }
+
+//---------------------------------------------------------------------------------------
+void FSkookumScriptRuntime::on_asset_loaded(UObject * new_object_p)
+  {
+  // is this a new blueprint?
+  UBlueprint * blueprint_p = Cast<UBlueprint>(new_object_p);
+  if (blueprint_p)
+    {
+    // Reinitialize bindings for this new blueprint
+    SkClass * sk_class_p = SkUEClassBindingHelper::get_sk_class_from_ue_class(blueprint_p->GeneratedClass);
+    if (sk_class_p)
+      {
+      m_runtime.get_blueprint_interface()->reinitialize_class(sk_class_p);
+      }
     }
   }
 
@@ -503,6 +532,12 @@ void FSkookumScriptRuntime::ShutdownModule()
     // Remote communication to and from SkookumScript IDE
     m_remote_client.disconnect();
   #endif
+
+  // Clear out our registered delegates
+  FWorldDelegates::OnPreWorldInitialization.Remove(m_on_world_init_pre_handle);
+  FWorldDelegates::OnPostWorldInitialization.Remove(m_on_world_init_post_handle);
+  FWorldDelegates::OnWorldCleanup.Remove(m_on_world_cleanup_handle);
+  FCoreUObjectDelegates::OnAssetLoaded.Remove(m_on_asset_loaded_handle);
   }
 
 //---------------------------------------------------------------------------------------
@@ -578,5 +613,30 @@ void FSkookumScriptRuntime::set_game_world(UWorld * world_p)
     SK_ASSERTX(false, "Couldn't find the @@world class member variable!");
     }
   }
+
+//---------------------------------------------------------------------------------------
+// 
+void FSkookumScriptRuntime::set_editor_interface(ISkookumScriptRuntimeEditorInterface * editor_interface_p)
+  {
+  m_editor_interface_p = editor_interface_p;
+  #ifdef SKOOKUM_REMOTE_UNREAL
+    m_remote_client.set_editor_interface(editor_interface_p);
+  #endif
+  }
+
+//---------------------------------------------------------------------------------------
+// 
+bool FSkookumScriptRuntime::is_skookum_blueprint_function(UFunction * function_p) const
+  {
+  return m_runtime.get_blueprint_interface()->is_skookum_blueprint_function(function_p);
+  }
+
+//---------------------------------------------------------------------------------------
+// 
+bool FSkookumScriptRuntime::is_skookum_blueprint_event(UFunction * function_p) const
+  {
+  return m_runtime.get_blueprint_interface()->is_skookum_blueprint_event(function_p);
+  }
+
 
 //#pragma optimize("g", on)

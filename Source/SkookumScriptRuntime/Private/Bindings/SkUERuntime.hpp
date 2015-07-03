@@ -15,6 +15,7 @@
 
 #include <SkookumScript/SkookumRuntimeBase.hpp>
 #include "../SkookumScriptListenerManager.hpp"
+#include "SkUEBlueprintInterface.hpp"
 
 #include "Platform.h"  // Set up base types, etc for the platform
 
@@ -66,7 +67,9 @@ class SkUERuntime : public SkookumRuntimeBase
 
       // Accessors
 
-        SkookumScriptListenerManager * get_listener_manager() { return &m_listener_manager; }
+        SkookumScriptListenerManager * get_listener_manager()          { return &m_listener_manager; }
+        SkUEBlueprintInterface * get_blueprint_interface()             { return &m_blueprint_interface; }
+        const SkUEBlueprintInterface * get_blueprint_interface() const { return &m_blueprint_interface; }
 
   protected:
 
@@ -80,6 +83,7 @@ class SkUERuntime : public SkookumRuntimeBase
       mutable FString     m_compiled_path;
 
       SkookumScriptListenerManager m_listener_manager;
+      SkUEBlueprintInterface       m_blueprint_interface;
 
   };  // SkUERuntime
 

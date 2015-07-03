@@ -706,7 +706,7 @@ class SkParser : public AString
       eIdentify identify_text(       uint32_t start_pos = 0u, uint32_t * end_pos_p = nullptr, uint flags = IdentifyFlag__default) const;
       eIdentify identify_class(      uint32_t start_pos = 0u, uint32_t * end_pos_p = nullptr, AString * class_name_p = nullptr, SkClass ** class_pp = nullptr) const;
       eSkMember identify_member_filename(SkQualifier * ident_p = nullptr, bool * class_member_p = nullptr, bool optional_scope = true) const;
-      eResult   identify_member_name(SkMemberInfo * member_p, uint32_t start_pos = 0u, uint32_t * end_pos_p = nullptr) const;
+      eResult   identify_member_name(SkMemberInfo * member_p, uint32_t start_pos = 0u, uint32_t * end_pos_p = nullptr, eSkMember accept_to = SkMember_class_meta) const;
 
   // Class Methods
 

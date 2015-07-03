@@ -184,7 +184,7 @@ inline void ARefCountMix<_Subclass>::dereference()
 
   if (m_ref_count == 0u)
     {
-	m_ref_count = ARefCount_zero_refs;
+	  m_ref_count = ARefCount_zero_refs;
 
     // Cast to subclass so if this method is virtual/overridden it will be called properly.
     static_cast<_Subclass *>(this)->on_no_references();
@@ -225,7 +225,7 @@ inline void ARefCountMix<_Subclass>::ensure_reference()
   {
   if (m_ref_count == 0u)
     {
-	m_ref_count = ARefCount_zero_refs;
+	  m_ref_count = ARefCount_zero_refs;
 
     // Cast to subclass so if this method is virtual/overridden it will be called properly.
     static_cast<_Subclass *>(this)->on_no_references();

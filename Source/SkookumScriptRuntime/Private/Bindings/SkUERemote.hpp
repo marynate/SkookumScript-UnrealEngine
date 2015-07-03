@@ -85,7 +85,11 @@ class SkUERemote : public SkookumRemoteRuntimeBase
     //   method directly.
     virtual void wait_for_update() override;
 
-  // Commands
+    // Callbacks
+
+    void set_editor_interface(ISkookumScriptRuntimeEditorInterface * editor_interface_p);
+
+    // Commands
 
   protected:
 
@@ -105,7 +109,10 @@ class SkUERemote : public SkookumRemoteRuntimeBase
 
     // Data byte index point - ADef_uint32 when not in progress
     uint32_t    m_data_idx;
-  
+
+    // Editor interface so we can notify it about interesting events
+    ISkookumScriptRuntimeEditorInterface * m_editor_interface_p;
+
   };  // SkUERemote
 
 #endif  // SKOOKUM_REMOTE_UNREAL

@@ -148,6 +148,7 @@ void SkUERuntime::on_bind_routines()
   A_DPRINT(A_SOURCE_STR "\nBind routines for SkUERuntime.\n");
 
   SkUEBindings::register_all();
+  m_blueprint_interface.reinitialize_all(); // Hook up Blueprint functions and events for static classes
   }
 
 //---------------------------------------------------------------------------------------

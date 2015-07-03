@@ -424,9 +424,20 @@ void ADebug::print_format(
 
 //---------------------------------------------------------------------------------------
 // Writes the string to standard output.
-// Arg         str - string to print. 
-// Modifiers:   static
-// Author(s):   Conan Reis
+// 
+// Params:
+//   str: string to print. 
+// 
+// Notes:
+//   The standard output `stdout` may only be written to with MS Windows console apps and
+//   not GUI apps.
+//   
+//   $Revisit - CReis There may be a way to hack use of `stdout` in GUI apps - see:
+//     http://stackoverflow.com/a/26087606/1060973
+//     http://www.codeproject.com/Articles/10073/Console-Output-from-a-GUI-program?msg=1477550#xx1477550xx
+//   
+// Modifiers: static
+// Author(s): Conan Reis
 void ADebug::print_std(const AString & str)
   {
   fwrite(str.as_cstr(), sizeof(char), str.get_length(), stdout);
