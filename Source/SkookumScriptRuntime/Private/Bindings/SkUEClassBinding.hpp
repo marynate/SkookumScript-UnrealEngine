@@ -139,6 +139,16 @@ class SkClassBindingSimpleForceInit : public SkClassBindingBase<_BindingClass, _
     static void mthd_ctor(SkInvokedMethod * scope_p, SkInstance ** result_pp) { scope_p->get_this()->construct<_BindingClass>(ForceInitToZero); }
   };
 
+//---------------------------------------------------------------------------------------
+// Class binding for UStruct
+template<class _BindingClass, typename _DataType>
+class SkClassBindingStruct : public SkClassBindingBase < _BindingClass, _DataType >
+  {
+  public:
+
+    static UStruct * ms_ustruct_p; // Pointer to the UStruct belonging to this binding
+  };
+
 //=======================================================================================
 // Class Data Definitions
 //=======================================================================================
@@ -147,6 +157,11 @@ class SkClassBindingSimpleForceInit : public SkClassBindingBase<_BindingClass, _
 // Pointer to the UClass belonging to this binding
 template<class _BindingClass, class _UObjectType>
 UClass * SkUEClassBindingEntity<_BindingClass, _UObjectType>::ms_uclass_p = nullptr;
+
+//---------------------------------------------------------------------------------------
+// Pointer to the UStruct belonging to this binding
+template<class _BindingClass, typename _DataType>
+UStruct * SkClassBindingStruct<_BindingClass, _DataType>::ms_ustruct_p = nullptr;
 
 //=======================================================================================
 // Inline Function Definitions
