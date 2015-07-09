@@ -35,6 +35,17 @@
 #include <SkUE.generated.inl> // Massive code file containing thousands of generated bindings
 
 //=======================================================================================
+// Data
+//=======================================================================================
+
+// HACK - to fix linker error - remove this if it causes trouble
+namespace FNavigationSystem
+  {
+  const float FallbackAgentRadius = 35.f;
+  const float FallbackAgentHeight = 144.f;
+  }
+
+//=======================================================================================
 // SkUEBindings Methods
 //=======================================================================================
 

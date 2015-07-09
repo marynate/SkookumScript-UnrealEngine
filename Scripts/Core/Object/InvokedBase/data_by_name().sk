@@ -6,5 +6,5 @@
 // Author(s)   Conan Reis
 //---------------------------------------------------------------------------------------
 
-(Symbol data_name; Boolean exists) Object
+(Symbol data_name; exists?) Object
 

@@ -13,6 +13,7 @@
 #include "Engine.h"
 #include "CoreUObject.h"
 #include "ModuleManager.h"
+#include "UnrealString.h"
 
 #include <AgogCore/AgogCore.hpp>
 #include <AgogCore/AString.hpp>
@@ -28,6 +29,7 @@
 #include <SkookumScript/SkBoolean.hpp>
 #include <SkookumScript/SkInteger.hpp>
 #include <SkookumScript/SkReal.hpp>
+#include <SkookumScript/SkEnum.hpp>
 #include <SkookumScript/SkString.hpp>
 #include <SkookumScript/SkList.hpp>
 #include <SkookumScript/SkSymbol.hpp>

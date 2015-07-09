@@ -80,5 +80,6 @@ SkInvokeClosureCoroutine::is_immediate(
       }
   #endif
 
-  return true;
+  // Concurrent expressions may take more than one frame to execute and return.
+  return false;
   }

@@ -358,7 +358,6 @@ int32_t SkUEBlueprintInterface::add_function_entry(UClass * ue_class_p, SkMethod
     {
     if (!m_method_entry_array[method_index]) break;
     }
-  ue_method_p->RepOffset = uint16(method_index); // Remember array index of method to call
   if (method_index == m_method_entry_array.get_length())
     {
     m_method_entry_array.append(*function_entry_p);
@@ -367,6 +366,7 @@ int32_t SkUEBlueprintInterface::add_function_entry(UClass * ue_class_p, SkMethod
     {
     m_method_entry_array.set_at(method_index, function_entry_p);
     }
+  ue_method_p->RepOffset = uint16(method_index); // Remember array index of method to call
 
   return method_index;
   }
@@ -437,7 +437,6 @@ int32_t SkUEBlueprintInterface::add_event_entry(UClass * ue_class_p, SkMethodBas
     {
     if (!m_method_entry_array[method_index]) break;
     }
-  ue_method_p->RepOffset = uint16(method_index); // Remember array index of method to call
   if (method_index == m_method_entry_array.get_length())
     {
     m_method_entry_array.append(*event_entry_p);
@@ -475,7 +474,7 @@ void SkUEBlueprintInterface::delete_method_entry(uint32_t method_index)
     // Destroy the function along with its attached properties
     ue_method_p->ConditionalBeginDestroy();
     }
-  delete method_entry_p;
+  AMemory::free(method_entry_p);
   m_method_entry_array.set_at(method_index, nullptr);
   }
 

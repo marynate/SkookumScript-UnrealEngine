@@ -37,11 +37,6 @@ namespace UnrealBuildTool.Rules
             "Core",
             "CoreUObject",
             "Engine",
-            "InputCore",
-            "Sockets",
-            "Networking",
-            "AgogCore",
-            "SkookumScript"
           }
         );
 
@@ -51,7 +46,18 @@ namespace UnrealBuildTool.Rules
       }
 
       // ... add private dependencies that you statically link with here ...
-      //PrivateDependencyModuleNames.AddRange(new string[] {});
+      PrivateDependencyModuleNames.AddRange(
+        new string[]
+          {
+            "InputCore",
+            "Sockets",
+            "Networking",
+            "SlateCore",
+            "Slate",
+            "AgogCore",
+            "SkookumScript"
+          }
+        );
 
       // Add any modules that your module loads dynamically here ...
       //DynamicallyLoadedModuleNames.AddRange(new string[] {});

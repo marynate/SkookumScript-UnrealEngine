@@ -208,6 +208,23 @@ ASymbol ASymbol::create(
   uint32_t sym_id = ASYMBOL_STR_TO_ID(str);
 
   #if defined(A_SYMBOL_REF_LINK)
+
+    //  If the auto-parse symbol table is defined, make a copy any symbol not already in
+    //  in the main table so it can be removed once the auto-parse completes.
+    if (ASymbolTable::ms_auto_parse_syms_p)
+      {
+      ASymbolRef * sym_ref = ASymbolTable::ms_main_p->get_symbol(sym_id);
+      if (!sym_ref)
+        {
+        //A_DPRINT(A_SOURCE_STR "Adding symbol = %ld\n", sym_id);
+        ASymbolTable::ms_auto_parse_syms_p->symbol_reference(sym_id, str, term);
+        }
+      else
+        {
+        return sym_ref;
+        }
+      }
+
     return ASymbolTable::ms_main_p->symbol_reference(sym_id, str, term);
   #elif defined(A_SYMBOL_STR_DB)
     ASYMBOL_STR_STORE(sym_id, str, term);
@@ -256,6 +273,23 @@ ASymbol ASymbol::create(
   uint32_t sym_id = ASYMBOL_CSTR_TO_ID(cstr_p, length);
 
   #if defined(A_SYMBOL_REF_LINK)
+
+    //  If the auto-parse symbol table is defined, make a copy any symbol not already in
+    //  in the main table so it can be removed once the auto-parse completes.
+    if (ASymbolTable::ms_auto_parse_syms_p)
+      {
+      ASymbolRef * sym_ref = ASymbolTable::ms_main_p->get_symbol(sym_id);
+      if (!sym_ref)
+        {
+        //A_DPRINT(A_SOURCE_STR "Adding symbol = %ld\n", sym_id);
+        ASymbolTable::ms_auto_parse_syms_p->symbol_reference(sym_id, cstr_p, length, term);
+        }
+      else
+        {
+        return sym_ref;
+        }
+      }
+
     return ASymbolTable::ms_main_p->symbol_reference(sym_id, cstr_p, length, term);
   #elif defined(A_SYMBOL_STR_DB)
     ASYMBOL_CSTR_STORE(sym_id, cstr_p, length, term);
@@ -499,6 +533,7 @@ void ASymbol::table_from_binary(const void ** binary_pp)
     }
 }
 
+
 //---------------------------------------------------------------------------------------
 // Sets the optional serialization tracking table.  It keeps track of any
 //             symbol that is serialized - i.e. whenever as_binary(sym, binary_pp) is
@@ -528,5 +563,6 @@ void ASymbol::track_serialized(
       }
   #endif
   }
+
 
 #endif  // A_SYMBOLTABLE_CLASSES

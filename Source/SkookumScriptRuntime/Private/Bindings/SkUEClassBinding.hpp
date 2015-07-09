@@ -30,7 +30,24 @@ class SkUEClassBindingHelper
     static SkClass *    get_object_class(UObject * obj_p, UClass * def_uclass_p = nullptr, SkClass * def_class_p = nullptr); // Determine SkookumScript class from UClass
     static SkInstance * get_actor_component_instance(AActor * actor_p); // Return SkInstance of an actor's SkookumScriptComponent if present, nullptr otherwise
 
-    static UProperty *  find_class_property(UClass * class_p, FName property_name);
+    template<class _BindingClass, typename _DataType>
+    static SkInstance * new_instance(const _DataType & value) { return _BindingClass::new_instance(value); }
+    template<>
+    static SkInstance * new_instance<SkString, FString>(const FString & value) { return SkString::new_instance(AString(*value, value.Len())); }
+
+    template<class _BindingClass, typename _DataType>
+    static void         set_from_instance(_DataType * out_value_p, SkInstance * instance_p) { *out_value_p = (_DataType)instance_p->as<_BindingClass>(); }
+    template<>
+    static void         set_from_instance<SkString, FString>(FString * out_value_p, SkInstance * instance_p) { *out_value_p = FString(instance_p->as<SkString>().as_cstr()); }
+
+    template<class _BindingClass, typename _DataType>
+    static void         initialize_list_from_array(SkInstanceList * out_instance_list_p, const TArray<_DataType> & array);
+
+    template<class _BindingClass, typename _DataType>
+    static SkInstance * list_from_array(const TArray<_DataType> & array);
+
+    template<class _BindingClass, typename _DataType>
+    static void         initialize_array_from_list(TArray<_DataType> * out_array_p, const SkInstanceList & list);
 
   protected:
 
@@ -43,7 +60,6 @@ class SkUEClassBindingHelper
     static TMap<SkClassDescBase*, TWeakObjectPtr<UBlueprint>> ms_dynamic_class_map_s2u; // Maps SkClasses to their respective Blueprints
 
   };
-
 
 //---------------------------------------------------------------------------------------
 // Customized version of the UE weak pointer
@@ -130,6 +146,27 @@ class SkUEClassBindingActor : public SkUEClassBindingEntity<_BindingClass, _AAct
   };
 
 //---------------------------------------------------------------------------------------
+// Class binding for UStruct
+template<class _BindingClass, typename _DataType>
+class SkUEClassBindingStruct : public SkClassBindingBase<_BindingClass, _DataType>
+  {
+  public:
+
+    static UStruct * ms_ustruct_p; // Pointer to the UStruct belonging to this binding
+  };
+
+//---------------------------------------------------------------------------------------
+// Class binding for UStruct with plain old data (assign/copy with memcpy)
+template<class _BindingClass, typename _DataType>
+class SkUEClassBindingStructPod : public SkUEClassBindingStruct<_BindingClass,_DataType>
+  {
+  public:
+    // Copy constructor and assignment use memcpy
+    static void mthd_ctor_copy(SkInvokedMethod * scope_p, SkInstance ** result_pp) { ::memcpy(&scope_p->this_as<_BindingClass>(), &scope_p->get_arg<_BindingClass>(SkArg_1), sizeof(_BindingClass::tDataType)); }
+    static void mthd_op_assign(SkInvokedMethod * scope_p, SkInstance ** result_pp) { ::memcpy(&scope_p->this_as<_BindingClass>(), &scope_p->get_arg<_BindingClass>(SkArg_1), sizeof(_BindingClass::tDataType)); }
+  };
+
+//---------------------------------------------------------------------------------------
 // Class binding for types with a constructor that takes an EForceInit argument
 template<class _BindingClass, typename _DataType>
 class SkClassBindingSimpleForceInit : public SkClassBindingBase<_BindingClass, _DataType>
@@ -147,6 +184,11 @@ class SkClassBindingSimpleForceInit : public SkClassBindingBase<_BindingClass, _
 // Pointer to the UClass belonging to this binding
 template<class _BindingClass, class _UObjectType>
 UClass * SkUEClassBindingEntity<_BindingClass, _UObjectType>::ms_uclass_p = nullptr;
+
+//---------------------------------------------------------------------------------------
+// Pointer to the UStruct belonging to this binding
+template<class _BindingClass, typename _DataType>
+UStruct * SkUEClassBindingStruct<_BindingClass, _DataType>::ms_ustruct_p = nullptr;
 
 //=======================================================================================
 // Inline Function Definitions
@@ -189,3 +231,39 @@ inline UClass * SkUEClassBindingHelper::get_ue_class_from_sk_class(SkClassDescBa
   return add_dynamic_class_mapping(sk_class_p);
   }
 
+//---------------------------------------------------------------------------------------
+
+template<class _BindingClass, typename _DataType>
+void SkUEClassBindingHelper::initialize_list_from_array(SkInstanceList * out_instance_list_p, const TArray<_DataType> & array)
+  {
+  APArray<SkInstance> & list_instances = out_instance_list_p->get_instances();
+  list_instances.ensure_size_empty(array.Num());
+  for (auto & item : array)
+    {
+    list_instances.append(*new_instance<_BindingClass, _DataType>(item));
+    }
+  }
+
+//---------------------------------------------------------------------------------------
+
+template<class _BindingClass, typename _DataType>
+SkInstance * SkUEClassBindingHelper::list_from_array(const TArray<_DataType> & array)
+  {
+  SkInstance * instance_p = SkList::new_instance(array.Num());
+  initialize_list_from_array<_BindingClass, _DataType>(&instance_p->as<SkList>(), array);
+  return instance_p;
+  }
+
+//---------------------------------------------------------------------------------------
+
+template<class _BindingClass, typename _DataType>
+void SkUEClassBindingHelper::initialize_array_from_list(TArray<_DataType> * out_array_p, const SkInstanceList & list)
+  {
+  APArray<SkInstance> & instances = list.get_instances();
+  out_array_p->Reserve(instances.get_length());
+  for (auto & instance_p : instances)
+    {
+    uint32 index = out_array_p->AddUninitialized();
+    set_from_instance<_BindingClass, _DataType>(&(*out_array_p)[index], instance_p);
+    }
+  }

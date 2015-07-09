@@ -306,12 +306,6 @@ class SkInstance : public SkObjectBase, public ARefCountMix<SkInstance>
   };  // SkInstance
 
 
-//---------------------------------------------------------------------------------------
-// Specialization - also ensures that `SkInvokedBase::get_arg_data<SkClass>(--)` etc. work properly
-// 
-// See: SkInstance::as<SkMetaClass>()
-template<> inline SkClass * SkInstance::as_data<SkClass>() const  { return m_class_p; }
-
 
 // Used to set an effectively *infinite* reference count so that the instance never gets
 // "garbage collected" - in combination with overriding on_no_referenced() just to make sure.

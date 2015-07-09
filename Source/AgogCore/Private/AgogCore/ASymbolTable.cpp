@@ -35,6 +35,9 @@
 
 #if defined(A_SYMBOLTABLE_CLASSES)
 
+ASymbolTable * ASymbolTable::ms_auto_parse_syms_p = nullptr;
+
+
 //---------------------------------------------------------------------------------------
 // Default constructor
 // Arg         sharing_symbols - indicates whether or not the symbol table is sharing
@@ -727,6 +730,52 @@ ASymbolTable & ASymbolTable::get_main()
   //A_DSINGLETON_GUARD;
 
   return s_main;
+  }
+
+
+//---------------------------------------------------------------------------------------
+//  Setups the auto-parse temporary symbol table. Symbol creation calls will put shared copies of
+//  new symbols into the auto-parse symbol table. The auto-parse symbol table with then be used to
+//  remove these temporary symbols once the auto-parse terminates.
+//  
+//  Author(s)  John Stenersen
+void ASymbolTable::track_auto_parse_init()
+  {
+  if (ms_auto_parse_syms_p)
+    {
+    A_DPRINT(A_SOURCE_STR "ms_auto_parse_syms_p is not null. Forgotten call to track_auto_parse_term()?\n");
+    track_auto_parse_term();
+    }
+
+  ms_auto_parse_syms_p = this;
+  }
+
+
+//---------------------------------------------------------------------------------------
+//  Setups the auto-parse temporary symbol table. Symbol creation calls will put shared copies of
+//  new symbols into the auto-parse symbol table. The auto-parse symbol table with then be used to
+//  remove these temporary symbols once the auto-parse terminates.
+//  
+//  Author(s)  John Stenersen
+void ASymbolTable::track_auto_parse_term()
+  {
+  if (!ms_auto_parse_syms_p)
+    {
+    A_DPRINT(A_SOURCE_STR "ms_auto_parse_syms_p is null (terminated) already.?\n");
+    return;
+    }
+
+  //  Remove any symbols found in the auto-parse symbol table from the main symbol table.
+  uint32_t length = ms_auto_parse_syms_p->get_length();
+  for (uint32_t i = 0; i < length; i++)
+    {
+    ASymbolRef * sym_ref = ms_auto_parse_syms_p->m_sym_refs.get_at(i);
+    ms_main_p->m_sym_refs.remove(sym_ref->m_uid, AMatch_first_found);
+
+    //A_DPRINT(A_SOURCE_STR "Removing symbol = %ld\n", sym_ref->m_uid);
+    }
+
+  ms_auto_parse_syms_p = nullptr;
   }
 
 

@@ -25,14 +25,7 @@ namespace UnrealBuildTool.Rules
 					"Core",
 					"CoreUObject",
 					"Engine",
-					"InputCore",
 					"UnrealEd",
-					"AssetTools",
-					"SkookumScriptRuntime",
-					"ClassViewer",
-					"KismetCompiler",
-					"Kismet",
-					"BlueprintGraph"
 					// ... add other public dependencies that you statically link with here ...
 				}
 				);
@@ -40,6 +33,15 @@ namespace UnrealBuildTool.Rules
 			PrivateDependencyModuleNames.AddRange(
 				new string[]
 				{
+					"InputCore",
+					"AssetTools",
+					"SkookumScriptRuntime",
+					"ClassViewer",
+					"KismetCompiler",
+					"Kismet",
+					"BlueprintGraph",
+                    "AgogCore",
+                    "SkookumScript"
 					// ... add private dependencies that you statically link with here ...
 				}
 				);

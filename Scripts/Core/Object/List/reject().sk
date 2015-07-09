@@ -32,8 +32,10 @@
         [
         remove_at(idx)
         ]
-
-    idx++
+      else
+        [
+        idx++
+        ]
     ]
 
   this

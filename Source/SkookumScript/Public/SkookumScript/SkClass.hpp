@@ -219,6 +219,12 @@ class SkMetaClass : public SkClassUnaryBase, public SkInstanceUnreffed
 // See: SkInstance::as<SkClass>
 template<> inline SkMetaClass * SkInstance::as_data<SkMetaClass>() const { return static_cast<SkMetaClass *>(const_cast<SkInstance *>(this)); }
 
+//---------------------------------------------------------------------------------------
+// Specialization - also ensures that `SkInvokedBase::get_arg_data<SkClass>(--)` etc. work properly
+// 
+// See: SkInstance::as<SkMetaClass>()
+template<> inline SkClass * SkInstance::as_data<SkClass>() const  { return &static_cast<const SkMetaClass *>(this)->get_class_info(); }
+
 
 //---------------------------------------------------------------------------------------
 // SkookumScript Class - i.e. an instance of a class using class instance scope (both

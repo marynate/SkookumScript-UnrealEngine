@@ -632,8 +632,8 @@ class SkParser : public AString
     // whenever type info is available (it is not available until after the initial
     // preparse of the code and often only if data-structures are being created).
 
-    bool              parse_class_meta_source(SkClass * scope_p, Args & args = ms_def_args.reset());
-    eResult           parse_data_members_source(SkClassUnaryBase * scope_p, uint32_t start_pos = 0u, uint32_t * end_pos_p = nullptr, bool append_to_class_b = true);
+    bool              parse_class_meta_source(SkClass * scope_p, Args & args = ms_def_args.reset(), bool apply_meta_data_b = true);
+    bool              parse_data_members_source(SkClassUnaryBase * scope_p, Args & args = ms_def_args.reset(), bool append_to_class_b = true);
     SkMethodBase *    parse_method_source(const ASymbol & name, SkClassUnaryBase * scope_p, Args & args = ms_def_args.reset(), bool append_to_class_b = true);
     SkCoroutineBase * parse_coroutine_source(const ASymbol & name, SkClassUnaryBase * scope_p, Args & args = ms_def_args.reset(), bool append_to_class_b = true);
     uint32_t          parse_symbol_ids_source(ASymbolTable * ids_p, Args & args = ms_def_args.reset());

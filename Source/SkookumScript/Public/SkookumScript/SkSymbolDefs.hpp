@@ -34,6 +34,7 @@
 #define SK_SYMBOLS \
   ASYM(Actor) \
   ASYM(Auto_) \
+  ASYM(auto_parse_) \
   ASYM(Boolean) \
   ASYM(Char) \
   ASYM(Class) \

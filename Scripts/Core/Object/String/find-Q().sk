@@ -30,7 +30,7 @@
 //     ]
 //
 //   // Case insensitive search
-//   if (str.find?("SubString" case#false; find_idx)
+//   if (str.find?("SubString" case?#false; find_idx)
 //     [
 //     do_stuff(find_idx)
 //     ]

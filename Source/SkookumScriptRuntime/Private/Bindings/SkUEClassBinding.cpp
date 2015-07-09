@@ -86,21 +86,6 @@ SkInstance * SkUEClassBindingHelper::get_actor_component_instance(AActor * actor
   }
 
 //---------------------------------------------------------------------------------------
-// $Revisit MBreyer - move this somewhere else
-UProperty * SkUEClassBindingHelper::find_class_property(UClass * class_p, FName property_name)
-  {
-  for (TFieldIterator<UProperty> property_it(class_p, EFieldIteratorFlags::ExcludeSuper); property_it; ++property_it)
-    {
-    UProperty * property_p = *property_it;
-    if (property_p->GetFName() == property_name)
-      {
-      return property_p;
-      }
-    }
-  return nullptr;
-  }
-
-//---------------------------------------------------------------------------------------
 
 void SkUEClassBindingHelper::reset_static_class_mappings(uint32_t reserve)
   {

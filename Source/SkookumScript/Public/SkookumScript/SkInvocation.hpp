@@ -92,6 +92,9 @@ class SkInvokeBase : public SkQualifier
     virtual SkInvokedBase *                  invoke_call(SkInstance * receiver_p, SkObjectBase * scope_p, SkInvokedBase * caller_p, SkInstance ** result_pp) const = 0;
     virtual void                             track_memory(AMemoryStats * mem_stats_p) const = 0;
 
+    void null_arg1(SkExpressionBase * arg_p);
+
+
   protected:
     
   // Data Members
@@ -501,6 +504,7 @@ class SkCopyInvoke : public SkExpressionBase
 
     virtual eSkExprType     get_type() const;
     virtual SkInvokedBase * invoke(SkObjectBase * scope_p, SkInvokedBase * caller_p = nullptr, SkInstance ** result_pp = nullptr) const;
+    virtual void            null_receiver(SkExpressionBase * receiver_p);
     virtual void            track_memory(AMemoryStats * mem_stats_p) const;
 
     // Debugging Methods

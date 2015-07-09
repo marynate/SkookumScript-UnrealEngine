@@ -51,6 +51,10 @@ class ASymbolTable
 
     static ASymbolTable * ms_main_p;
 
+    #if defined(A_SYMBOLTABLE_CLASSES)
+      static ASymbolTable * ms_auto_parse_syms_p;
+    #endif
+
   // Common Methods
 
     explicit ASymbolTable(bool sharing_symbols = false, uint32_t initial_size = 0u);
@@ -74,6 +78,10 @@ class ASymbolTable
     AString translate_id(uint32_t sym_id) const;
     bool    translate_known_id(uint32_t sym_id, AString * str_p) const;
     ASymbol translate_str(const AString & str) const;
+
+    uint32_t  get_length() { return m_sym_refs.get_length(); }
+    void      track_auto_parse_init();
+    void      track_auto_parse_term();
 
   // Maintenance
 
