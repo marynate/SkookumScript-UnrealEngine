@@ -1,8 +1,11 @@
 //---------------------------------------------------------------------------------------
-// Description Sets the data with the specified name in this scope to the supplied object
-// Arg         data_name - name of data to set
-// Arg         data - object/instance to set
-// Author(s)   Conan Reis
+// Sets the data with the specified name in this scope to the supplied object.
+//
+// Params:
+//   data_name: name of data to set
+//   data: object/instance to set
+//
+// See: data_by_name(), data_by_name?()
 //---------------------------------------------------------------------------------------
 
 (Symbol data_name, Object value)

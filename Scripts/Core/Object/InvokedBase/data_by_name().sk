@@ -1,9 +1,24 @@
 //---------------------------------------------------------------------------------------
-// Description Returns the data instance with the specified name in this scope if it
-//             exists or nil if it does not.
-// Arg         data_name - name of data to lookup
-// RetArg      exists - set to true if exists and false if not
-// Author(s)   Conan Reis
+// Returns the data instance with the specified name in this scope if it exists or `nil`
+// if it does not.
+//
+// Params:
+//   data_name: name of data to lookup
+//
+// ReturnParams:
+//   exists?: set to true if exists and false if not
+//
+// Examples:
+//   ```
+//   !a_int:11
+//   !exist?
+//   !val: this_code.data_by_name('a_int'; exist?)
+//   println("a_int: " val " exist?: " exist?)
+//   val: this_code.data_by_name('a_int2'; exist?)
+//   println("a_int2: " val " exist?: " exist?)
+//   ```
+//
+// See: data_by_name?(), data_by_name_set()
 //---------------------------------------------------------------------------------------
 
 (Symbol data_name; exists?) Object
