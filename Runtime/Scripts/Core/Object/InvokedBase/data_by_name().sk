@@ -21,5 +21,5 @@
 // See: data_by_name?(), data_by_name_set()
 //---------------------------------------------------------------------------------------
 
-(Symbol data_name; exists?) Object
+(Symbol data_name; Boolean exists?) Object
 
