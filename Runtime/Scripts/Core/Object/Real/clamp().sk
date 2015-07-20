@@ -1,0 +1,11 @@
+//---------------------------------------------------------------------------------------
+// Description Ensures that this number is inclusively between the supplied min and max
+//             values and if it is over or under then set it to min or max - whichever it
+//             is closest to.
+// Returns     itself
+// Examples    num.clamp(0.0, 10.0)
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Real min, Real max) Real
+

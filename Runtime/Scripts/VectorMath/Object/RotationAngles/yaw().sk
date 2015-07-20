@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------------------
+// Returns the yaw value
+//
+// # Returns: the yaw value
+//
+// # Examples:
+//   do_stuff(vec.yaw)
+//
+// # See:
+//   pitch(), roll(), yaw_set(), pitch_set(), roll_set(), yaw_pitch_roll_set(), zero()
+//
+// # Author(s): Markus Breyer
+//---------------------------------------------------------------------------------------
+
+() Real
+

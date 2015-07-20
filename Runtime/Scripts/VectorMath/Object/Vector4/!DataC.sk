@@ -1,0 +1,10 @@
+Vector4 !@@zero
+Vector4 !@@axis_x
+Vector4 !@@axis_y
+Vector4 !@@axis_z
+Vector4 !@@axis_w
+Vector4 !@@axis_x_neg
+Vector4 !@@axis_y_neg
+Vector4 !@@axis_z_neg
+Vector4 !@@axis_w_neg
+

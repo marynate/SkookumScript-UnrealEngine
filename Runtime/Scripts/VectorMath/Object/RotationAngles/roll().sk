@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------------------
+// Returns the roll value
+//
+// # Returns: the roll-axis value
+//
+// # Examples:
+//   do_stuff(angles.roll)
+//
+// # See:
+//   yaw(), pitch(), yaw_set(), pitch_set(), roll_set(), yaw_pitch_roll_set(), zero()
+//
+// # Author(s): Markus Breyer
+//---------------------------------------------------------------------------------------
+
+() Real
+

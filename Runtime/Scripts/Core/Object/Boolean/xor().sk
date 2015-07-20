@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Description xor Returns true if either Booleans are true, but not both
+// Returns     true if one of the Booleans are true, false if not
+// Examples    value1 xor value2  // or value1.xor(value2)
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Boolean operand) Boolean
+

@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Description -- Decreases its value to lesser enumeration.
+// Returns     itself
+// Examples    enum--  // or enum.decrement
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+() ThisClass_
+

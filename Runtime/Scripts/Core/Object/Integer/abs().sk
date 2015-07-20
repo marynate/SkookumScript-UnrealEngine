@@ -1,0 +1,11 @@
+//---------------------------------------------------------------------------------------
+// Description Returns the absolute value of this number - makes it positive if it was
+//             negative.  The original number remains unchanged.
+// Returns     absolute value of itself
+// Examples    do_stuff(num.abs)
+//             num := num.abs
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+() Integer
+

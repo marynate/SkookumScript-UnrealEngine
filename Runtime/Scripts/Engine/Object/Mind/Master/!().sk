@@ -1,0 +1,15 @@
+//---------------------------------------------------------------------------------------
+// Master instance constructor
+//
+// See: _startup()
+//---------------------------------------------------------------------------------------
+
+() 
+
+  [
+  Debug.println("Member: Master.!() - Mind instance constructor called.")
+
+  // Call default starting point when engine runtime is present - i.e. do not call in IDE
+  branch [_startup_after1] when Debug.engine_present?
+  ]
+

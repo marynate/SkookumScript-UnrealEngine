@@ -1,0 +1,23 @@
+//---------------------------------------------------------------------------------------
+// Class constructor
+//
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+()
+
+  [
+  // Only create if hooked up to engine - i.e. not during stand-alone IDE
+  if Debug.engine_present?
+    [
+    @@zero:        Vector4!
+    @@axis_x:      Vector4!xyzw( 1  0  0  0)
+    @@axis_y:      Vector4!xyzw( 0  1  0  0)
+    @@axis_z:      Vector4!xyzw( 0  0  1  0)
+    @@axis_w:      Vector4!xyzw( 0  0  0  1)
+    @@axis_x_neg:  Vector4!xyzw(-1  0  0  0)
+    @@axis_y_neg:  Vector4!xyzw( 0 -1  0  0)
+    @@axis_z_neg:  Vector4!xyzw( 0  0 -1  0)
+    @@axis_w_neg:  Vector4!xyzw( 0  0  0 -1)
+    ]
+  ]

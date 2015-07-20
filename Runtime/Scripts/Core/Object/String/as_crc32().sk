@@ -1,0 +1,11 @@
+//---------------------------------------------------------------------------------------
+// Description Returns a checksum version of itself via the CRC (cyclic redundancy check)
+//             algorithm.
+// Returns     CRC32 version of itself.  ***Note that this value will be signed and many
+//             programs expect an unsigned value.***
+// Examples    str.as_crc32
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+() Integer
+

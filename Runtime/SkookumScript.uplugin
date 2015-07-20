@@ -1,0 +1,30 @@
+{
+  "FileVersion" : 3,
+  
+  "FriendlyName" : "SkookumScript",
+  "Version" : 1,
+  "VersionName" : "3.0.1250",
+  "CreatedBy" : "Agog Labs Inc.",
+  "CreatedByURL" : "http://SkookumScript.com",
+  "DocsURL" : "http://skookumscript.com/docs/integrations/ue4plugin/",
+  "EngineVersion" : "4.9",
+  "Description" : "SkookumScript - the powerful text-based video game language with full IDE. Simple code. Amazing gameplay.",
+  "Category" : "Scripting",
+  "EnabledByDefault" : true,
+  "IsBetaVersion" : true,
+  
+  "Modules" :
+  [
+    {
+      "Name": "SkookumScriptRuntime",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault",
+      "WhitelistPlatforms": [ "Win64", "Win32" ]
+    },
+    {
+      "Name" : "SkookumScriptEditor",
+      "Type" : "Editor",
+      "WhitelistPlatforms": [ "Win64" ]
+    }
+  ]
+}

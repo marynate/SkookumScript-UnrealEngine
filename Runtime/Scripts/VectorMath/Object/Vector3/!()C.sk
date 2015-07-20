@@ -1,0 +1,29 @@
+//---------------------------------------------------------------------------------------
+// Class constructor
+//
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+()
+
+  [
+  // Only create if hooked up to engine - i.e. not during stand-alone IDE
+  if Debug.engine_present?
+    [
+    @@zero:        Vector3!
+    @@axis_x:      Vector3!xyz( 1  0  0)
+    @@axis_y:      Vector3!xyz( 0  1  0)
+    @@axis_z:      Vector3!xyz( 0  0  1)
+    @@axis_x_neg:  Vector3!xyz(-1  0  0)
+    @@axis_y_neg:  Vector3!xyz( 0 -1  0)
+    @@axis_z_neg:  Vector3!xyz( 0  0 -1)
+    
+    // World Directions
+    @@direction_right:     @@axis_y
+    @@direction_left:      @@axis_y_neg
+    @@direction_forward:   @@axis_x
+    @@direction_backward:  @@axis_x_neg
+    @@direction_up:        @@axis_z
+    @@direction_down:      @@axis_z_neg
+    ]
+  ]

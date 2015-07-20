@@ -1,0 +1,8 @@
+//---------------------------------------------------------------------------------------
+// Description Get position/translation of transform
+// Returns     position/translation of transform
+// Author(s)   Markus Breyer
+//---------------------------------------------------------------------------------------
+
+() Vector3
+

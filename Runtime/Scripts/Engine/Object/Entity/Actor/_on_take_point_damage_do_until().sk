@@ -1,0 +1,7 @@
+//---------------------------------------------------------------------------------------
+// Whenever an `TakePointDamage` event occurs on this actor, run `code` on it.
+// If `code` returns `false`, continue waiting for next event, 
+// otherwise, exit and return the event parameters
+//---------------------------------------------------------------------------------------
+
+((Real damage, Controller instigated_by, Vector3 hit_location, PrimitiveComponent hit_component, Name bone_name, Vector3 shot_from_direction, DamageType damage_type, Actor damage_causer) Boolean code; Real damage, Controller instigated_by, Vector3 hit_location, PrimitiveComponent hit_component, Name bone_name, Vector3 shot_from_direction, DamageType damage_type, Actor damage_causer)

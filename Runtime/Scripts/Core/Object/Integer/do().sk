@@ -1,0 +1,29 @@
+//---------------------------------------------------------------------------------------
+// Calls supplied immediate closure code n times where n is this Integer.
+// The index value is passed as an argument and is exclusive: 0..n-1
+//
+// # Examples:
+//   3.do[println(idx)]
+//
+//   // Prints
+//   0
+//   1
+//   2
+//
+// # Notes:     Use _*() versions for durational iteration.
+// # See:       _do(), do_by(), do_reverse(), to()
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+((Integer idx) code)
+
+  [
+  !idx: 0
+  
+  loop
+    [
+    if idx >= this [exit]
+    code(idx)
+    idx++
+    ]
+  ]  

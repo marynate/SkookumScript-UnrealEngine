@@ -1,0 +1,10 @@
+//---------------------------------------------------------------------------------------
+// Default starting point for durational (coroutine based) behaviour
+//---------------------------------------------------------------------------------------
+
+() 
+
+  [
+  Debug.println("Member: Master._startup() - Default starting point for durational (coroutine based) behaviour.")
+  ]
+

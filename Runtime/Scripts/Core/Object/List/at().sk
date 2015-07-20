@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Description Returns item/element at specified index position.
+// Examples    {0, "one", 2.0}.at(1) // returns "one"
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Integer index) ItemClass_
+
+

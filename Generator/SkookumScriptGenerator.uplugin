@@ -1,0 +1,25 @@
+{
+	"FileVersion" : 3,
+	
+	"FriendlyName" : "SkookumScript Generator",
+	"Version" : 1,
+	"VersionName" : "3.0.1250",
+	"CreatedBy" : "Agog Labs Inc.",
+	"CreatedByURL" : "http://SkookumScript.com",
+	"DocsURL" : "http://skookumscript.com/docs/integrations/ue4plugin/",
+	"EngineVersion" : "4.8",
+	"Description" : "SkookumScript - the powerful text-based video game language with full IDE. This plugin generates script and C++ bindings from UE4 Blueprint meta-tags in C++ source to be used by the 'SkookumScript' plugin.",
+	"Category" : "Scripting",
+	"EnabledByDefault" : true,
+	"IsBetaVersion" : true,
+
+	"Modules" :
+	[
+		{
+			"Name" : "SkookumScriptGenerator",
+			"Type" : "Program",
+			"LoadingPhase" : "PostConfigInit",
+			"WhitelistPlatforms" : [ "Win64", "Win32" ]
+		}
+	]
+}

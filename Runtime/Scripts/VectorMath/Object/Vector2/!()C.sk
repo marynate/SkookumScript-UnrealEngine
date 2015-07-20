@@ -1,0 +1,19 @@
+//---------------------------------------------------------------------------------------
+// Class constructor
+//
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+()
+
+  [
+  // Only create if hooked up to engine - i.e. not during stand-alone IDE
+  if Debug.engine_present?
+    [
+    @@zero:        Vector2!
+    @@axis_x:      Vector2!xy( 1  0)
+    @@axis_y:      Vector2!xy( 0  1)
+    @@axis_x_neg:  Vector2!xy(-1  0)
+    @@axis_y_neg:  Vector2!xy( 0 -1)    
+    ]
+  ]

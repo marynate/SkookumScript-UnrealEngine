@@ -1,0 +1,30 @@
+//---------------------------------------------------------------------------------------
+// Calls supplied immediate closure code n times in reverse order where n is this Integer.
+// The index value is passed as an argument and is exclusive: n-1..0
+//
+// # Examples:
+//   3.do_reverse[println(idx)]
+//
+//   // Prints
+//   2
+//   1
+//   0
+//
+// # Notes:     Use _*() versions for durational iteration.
+// # See:       do(), do_by(), to(), _do()
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+((Integer idx) code)
+
+  [
+  !idx:  this.Integer
+  !zero: 0
+  
+  loop
+    [
+    if idx <= zero [exit]
+    idx--
+    code(idx)
+    ]
+  ]  

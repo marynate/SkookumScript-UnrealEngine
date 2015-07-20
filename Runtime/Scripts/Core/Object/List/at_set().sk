@@ -1,0 +1,13 @@
+//---------------------------------------------------------------------------------------
+// Sets specified index position to supplied item/element.
+//
+// # Examples:  {0 "one" 2.0}.at_set(1 "ONE") // changes list to {0, "ONE", 2.0}
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Integer index, ItemClass_ item)
+// Returns itself
+ThisClass_
+
+
+

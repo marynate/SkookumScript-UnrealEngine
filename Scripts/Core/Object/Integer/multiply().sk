@@ -1,9 +1,0 @@
-//---------------------------------------------------------------------------------------
-// Description * Returns a new value that is the product of itself and the supplied value.
-// Returns     new value that is the product of itself and the supplied value.
-// Examples    num * 3  // or num.multiply(3)
-// Author(s)   Conan Reis
-//---------------------------------------------------------------------------------------
-
-(Integer num) Integer
-

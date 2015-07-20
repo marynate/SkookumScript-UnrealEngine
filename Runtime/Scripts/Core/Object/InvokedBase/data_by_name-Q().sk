@@ -1,0 +1,11 @@
+//---------------------------------------------------------------------------------------
+// Returns `true` if the data instance with the specified name in this scope or `false`
+// if it does not.
+//
+// Params:
+//   data_name: name of data to lookup
+//
+// See: data_by_name(), data_by_name_set()
+//---------------------------------------------------------------------------------------
+
+(Symbol data_name) Boolean

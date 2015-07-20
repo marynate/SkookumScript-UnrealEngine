@@ -1,0 +1,5 @@
+Vector2 !@@zero
+Vector2 !@@axis_x
+Vector2 !@@axis_y
+Vector2 !@@axis_x_neg
+Vector2 !@@axis_y_neg

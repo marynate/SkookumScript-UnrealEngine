@@ -1,0 +1,13 @@
+//---------------------------------------------------------------------------------------
+// Returns Integer representation of itself - standard 0 if false and 1 if true.
+//
+// #Examples
+//   bool>>Integer
+//
+// #See Also   Integer.Boolean()
+// #Notes      This is often done in other languages as an auto-coercion.
+// #Author(s)  Conan Reis
+//---------------------------------------------------------------------------------------
+
+() Integer
+

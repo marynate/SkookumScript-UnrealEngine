@@ -1,0 +1,11 @@
+//---------------------------------------------------------------------------------------
+// Description Returns string representation of itself
+// Returns     itself as a string
+// Examples    
+// See Also    
+// Notes       
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+() String
+

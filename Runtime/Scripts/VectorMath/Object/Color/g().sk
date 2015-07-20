@@ -1,0 +1,22 @@
+//---------------------------------------------------------------------------------------
+// Returns the green value
+//
+// # Returns: the green value
+//
+// # Examples:
+//   do_stuff(col.g)
+//
+// # Notes:
+//   Color routines with parameters or temporary variables that use `g` must use
+//  `this.g`, `this.g()` to call this routine to differentiate between this routine
+//  without arguments and the variable. Alternatively if a different variable such as
+//  `y_` is used then `g` can be used as this routine without arguments.
+//
+// # See:
+//   r(), b(), r_set(), g_set(), b_set(), black()
+//
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+() Real
+

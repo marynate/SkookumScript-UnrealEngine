@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Description nxor  Returns false if either Booleans are true, but not both
+// Returns     false if one of the Booleans are true, true if not
+// Examples    value1 nxor value2  // or value1.nxor(value2)
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Boolean operand) Boolean
+

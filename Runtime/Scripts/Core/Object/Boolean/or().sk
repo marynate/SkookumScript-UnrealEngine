@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Description or Returns true if either Boolean is true
+// Returns     true if either Booleans is true, false if both are false
+// Examples    value1 or value2  // or value1.or(value2)
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Boolean operand) Boolean
+

@@ -1,0 +1,3 @@
+// A meter/metre in length in the world co-ordinate system.
+// Unreal uses centimeters as its default unit so a meter is 100cm.
+Real !@@meter

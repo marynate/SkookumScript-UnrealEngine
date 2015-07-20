@@ -1,0 +1,19 @@
+//---------------------------------------------------------------------------------------
+// Sets the w value
+//
+// # Params:
+//   w: new w-axis vaule
+//
+// # Returns: itself
+//
+// # Examples:
+//   vec.x_set(val)
+//
+// #See Also
+//   y_set(), z_set(), w_set(), xyzw_set(), x(), y(), z(), zero()
+//
+// # Author(s): Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Real w) Vector4
+

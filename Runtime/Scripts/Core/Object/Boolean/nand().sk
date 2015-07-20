@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------------------
+// Description nand  Returns true unless both Booleans are true.
+// Returns     true either Boolean is false, false if not
+// Examples    value1 nand value2  // or value1.nand(value2)
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+(Boolean operand) Boolean
+

@@ -1,0 +1,11 @@
+//---------------------------------------------------------------------------------------
+// Description Get the instantiated actors derived from this class and all subclasses.
+// Returns     List of all instances of this class
+// Examples    !actors:  Actor.nameds
+//
+// See Also    named_count(), named(), find_instance(), find_named()
+// Author(s)   Conan Reis
+//---------------------------------------------------------------------------------------
+
+() List{ThisClass_}
+
