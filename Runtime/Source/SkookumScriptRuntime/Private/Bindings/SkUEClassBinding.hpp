@@ -51,14 +51,21 @@ class SkUEClassBindingHelper
 
   protected:
 
+  #if WITH_EDITOR
     static UClass *     add_dynamic_class_mapping(SkClassDescBase * sk_class_desc_p);
     static SkClass *    add_dynamic_class_mapping(UBlueprint * blueprint_p);
+  #else
+    static UClass *     add_static_class_mapping(SkClassDescBase * sk_class_desc_p);
+    static SkClass *    add_static_class_mapping(UClass * ue_class_p);
+  #endif
 
     static TMap<UClass*, SkClass*>                            ms_static_class_map_u2s; // Maps UClasses to their respective SkClasses
     static TMap<SkClassDescBase*, UClass*>                    ms_static_class_map_s2u; // Maps SkClasses to their respective UClasses
+
+  #if WITH_EDITOR
     static TMap<UBlueprint*, SkClass*>                        ms_dynamic_class_map_u2s; // Maps Blueprints to their respective SkClasses
     static TMap<SkClassDescBase*, TWeakObjectPtr<UBlueprint>> ms_dynamic_class_map_s2u; // Maps SkClasses to their respective Blueprints
-
+  #endif
   };
 
 //---------------------------------------------------------------------------------------
@@ -201,16 +208,20 @@ inline SkClass * SkUEClassBindingHelper::get_sk_class_from_ue_class(UClass * ue_
   // First see if it's a known static (Engine) class
   SkClass ** sk_class_pp = ms_static_class_map_u2s.Find(ue_class_p);
   if (sk_class_pp) return *sk_class_pp;
-  // If not, it might be a dynamic (Blueprint) class
-  UBlueprintGeneratedClass * blueprint_class_p = Cast<UBlueprintGeneratedClass>(ue_class_p);
-  if (!blueprint_class_p) return nullptr;
-  UBlueprint * blueprint_p = Cast<UBlueprint>(blueprint_class_p->ClassGeneratedBy);
-  if (!blueprint_p) return nullptr;
-  // It's a blueprint class, see if we know it already
-  sk_class_pp = ms_dynamic_class_map_u2s.Find(blueprint_p);
-  if (sk_class_pp) return *sk_class_pp;
-  // (Yet) unknown, try to look it up by name and add to map
-  return add_dynamic_class_mapping(blueprint_p);
+  #if WITH_EDITOR
+    // If not, it might be a dynamic (Blueprint) class
+    UBlueprintGeneratedClass * blueprint_class_p = Cast<UBlueprintGeneratedClass>(ue_class_p);
+    if (!blueprint_class_p) return nullptr;
+    UBlueprint * blueprint_p = Cast<UBlueprint>(blueprint_class_p->ClassGeneratedBy);
+    if (!blueprint_p) return nullptr;
+    // It's a blueprint class, see if we know it already
+    sk_class_pp = ms_dynamic_class_map_u2s.Find(blueprint_p);
+    if (sk_class_pp) return *sk_class_pp;
+    // (Yet) unknown, try to look it up by name and add to map
+    return add_dynamic_class_mapping(blueprint_p);
+  #else
+    return add_static_class_mapping(ue_class_p);
+  #endif
   }
 
 //---------------------------------------------------------------------------------------
@@ -220,15 +231,19 @@ inline UClass * SkUEClassBindingHelper::get_ue_class_from_sk_class(SkClassDescBa
   // First see if it's a known static (Engine) class
   UClass ** ue_class_pp = ms_static_class_map_s2u.Find(sk_class_p);
   if (ue_class_pp) return *ue_class_pp;
-  // If not, see if it's a known dynamic (Blueprint) class
-  TWeakObjectPtr<UBlueprint> * blueprint_pp = ms_dynamic_class_map_s2u.Find(sk_class_p);
-  if (blueprint_pp)
-    {
-    UBlueprint * blueprint_p = blueprint_pp->Get();
-    if (blueprint_p) return blueprint_p->GeneratedClass;
-    }
-  // (Yet) unknown (or blueprint was rebuilt/reloaded), try to look it up by name and add to map
-  return add_dynamic_class_mapping(sk_class_p);
+  #if WITH_EDITOR
+    // If not, see if it's a known dynamic (Blueprint) class
+    TWeakObjectPtr<UBlueprint> * blueprint_pp = ms_dynamic_class_map_s2u.Find(sk_class_p);
+    if (blueprint_pp)
+      {
+      UBlueprint * blueprint_p = blueprint_pp->Get();
+      if (blueprint_p) return blueprint_p->GeneratedClass;
+      }
+    // (Yet) unknown (or blueprint was rebuilt/reloaded), try to look it up by name and add to map
+    return add_dynamic_class_mapping(sk_class_p);
+  #else
+    return add_static_class_mapping(sk_class_p);
+  #endif
   }
 
 //---------------------------------------------------------------------------------------

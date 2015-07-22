@@ -16,8 +16,10 @@
 
 TMap<UClass*, SkClass*>                             SkUEClassBindingHelper::ms_static_class_map_u2s;
 TMap<SkClassDescBase*, UClass*>                     SkUEClassBindingHelper::ms_static_class_map_s2u;
+#if WITH_EDITOR
 TMap<SkClassDescBase*, TWeakObjectPtr<UBlueprint>>  SkUEClassBindingHelper::ms_dynamic_class_map_s2u;
 TMap<UBlueprint*, SkClass*>                         SkUEClassBindingHelper::ms_dynamic_class_map_u2s;
+#endif
 
 //---------------------------------------------------------------------------------------
 // Get pointer to UWorld from global variable
@@ -103,6 +105,7 @@ void SkUEClassBindingHelper::add_static_class_mapping(SkClass * sk_class_p, UCla
   ms_static_class_map_s2u.Add(sk_class_p, ue_class_p);
   }
 
+#if WITH_EDITOR
 //---------------------------------------------------------------------------------------
 
 UClass * SkUEClassBindingHelper::add_dynamic_class_mapping(SkClassDescBase * sk_class_desc_p)
@@ -113,7 +116,17 @@ UClass * SkUEClassBindingHelper::add_dynamic_class_mapping(SkClassDescBase * sk_
   // Dynamic classes have blueprints - look it up by name
   FString class_name(sk_class_p->get_name_cstr());
   UBlueprint * blueprint_p = FindObject<UBlueprint>(ANY_PACKAGE, *class_name);
-  if (!blueprint_p) return nullptr;
+  if (!blueprint_p)
+    {
+    blueprint_p = LoadObject<UBlueprint>(SkUEClassBindingHelper::get_world(), *class_name);
+    if (!blueprint_p)
+      {
+      UClass * blueprint_class_p = FindObject<UClass>(ANY_PACKAGE, *(class_name + TEXT("_C")));
+      if (!blueprint_class_p) return nullptr;
+      blueprint_p = Cast<UBlueprint>(blueprint_class_p->ClassGeneratedBy);
+      if (!blueprint_p) return nullptr;
+      }
+    }
 
   // Add to map of known class equivalences
   ms_dynamic_class_map_u2s.Add(blueprint_p, sk_class_p);
@@ -140,3 +153,49 @@ SkClass * SkUEClassBindingHelper::add_dynamic_class_mapping(UBlueprint * bluepri
 
   return sk_class_p;
   }
+
+#else // !WITH_EDITOR = cooked data build
+//---------------------------------------------------------------------------------------
+
+UClass * SkUEClassBindingHelper::add_static_class_mapping(SkClassDescBase * sk_class_desc_p)
+  {
+  // Get fully derived SkClass
+  SkClass * sk_class_p = sk_class_desc_p->get_key_class();
+
+  // Look it up and remember it
+  FString class_name(sk_class_p->get_name_cstr());
+  UClass * ue_class_p = FindObject<UClass>(ANY_PACKAGE, *(class_name + TEXT("_C")));
+  if (ue_class_p)
+    {
+    add_static_class_mapping(sk_class_p, ue_class_p);
+    }
+
+  return ue_class_p;
+  }
+
+//---------------------------------------------------------------------------------------
+
+SkClass * SkUEClassBindingHelper::add_static_class_mapping(UClass * ue_class_p)
+  {
+  // Look up SkClass by blueprint name
+  const FString & ue_class_name = ue_class_p->GetName(); 
+  int32 ue_class_name_len = ue_class_name.Len();
+  if (ue_class_name_len < 3) return nullptr;
+
+  // When we get to this function, we are looking for a class name that has "_C" appended at the end
+  // So we subtract two from the length to truncate those two characters
+  // We don't check here if the last two characters actually _are_ "_C" because it does not matter
+  // since in that case it would be an error anyway
+  AString class_name(*ue_class_name, ue_class_name_len - 2);
+  SkClass * sk_class_p = SkBrain::get_class(ASymbol::create(class_name, ATerm_short));
+
+  // If found, add to map of known class equivalences
+  if (sk_class_p)
+    {
+    add_static_class_mapping(sk_class_p, ue_class_p);
+    }
+
+  return sk_class_p;
+  }
+
+#endif

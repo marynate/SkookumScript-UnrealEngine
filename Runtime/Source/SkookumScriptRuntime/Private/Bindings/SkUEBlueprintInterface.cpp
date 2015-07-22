@@ -67,12 +67,16 @@ UClass * SkUEBlueprintInterface::reinitialize_class(SkClass * sk_class_p)
   if (ue_class_p)
     {
     // If this is a blueprint generated class, we want to attach ourselves to the skeleton class instead
-  #if 0
+  #if 0 // WITH_EDITOR
     UBlueprintGeneratedClass * blueprint_class_p = Cast<UBlueprintGeneratedClass>(ue_class_p);
     if (blueprint_class_p)
-      {
-      UClass * ue_skel_class_p = Cast<UBlueprint>(blueprint_class_p->ClassGeneratedBy)->SkeletonGeneratedClass;
-      ue_class_p = ue_skel_class_p;
+      {      
+      UBlueprint * blueprint_p = Cast<UBlueprint>(blueprint_class_p->ClassGeneratedBy);
+      if (blueprint_p)
+        {
+        UClass * ue_skel_class_p = blueprint_p->SkeletonGeneratedClass;
+        ue_class_p = ue_skel_class_p;
+        }
       }
   #endif
 
@@ -102,8 +106,7 @@ void SkUEBlueprintInterface::reinitialize_class(SkClass * sk_class_p, UClass * u
   for (uint32_t i = 0; i < m_method_entry_array.get_length(); ++i)
     {
     MethodEntry * method_entry_p = m_method_entry_array[i];
-    SK_ASSERTX(!method_entry_p || method_entry_p->m_ue_method_p.IsValid(), "Encountered invalid method pointer."); // If this is a problem, store and use sk_class_p instead
-    if (method_entry_p && method_entry_p->m_ue_method_p->GetOuter() == ue_class_p)
+    if (method_entry_p && method_entry_p->m_sk_method_p->get_scope() == sk_class_p)
       {
       delete_method_entry(i);
       }
@@ -230,6 +233,7 @@ void SkUEBlueprintInterface::mthd_trigger_event(SkInvokedMethod * scope_p, SkIns
     if (method_entry_p && method_entry_p->m_sk_method_p == scope_p->get_invokable())
       {
       // Found - invoke it
+      SK_ASSERTX(method_entry_p->m_ue_method_p.IsValid(), a_str_format("Tried to invoke Blueprint event function %s but the UFunction object has gone away.", method_entry_p->m_sk_method_p->get_name_cstr()));
 
       // Create parameters on stack
       const EventEntry * event_entry_p = static_cast<EventEntry *>(method_entry_p);
@@ -303,7 +307,7 @@ int32_t SkUEBlueprintInterface::try_add_method_entry(UClass * ue_class_p, SkMeth
 int32_t SkUEBlueprintInterface::add_function_entry(UClass * ue_class_p, SkMethodBase * sk_method_p, const FString & category)
   {
   // Create new UFunction
-  UFunction * ue_method_p = NewObject<UFunction>(ue_class_p, sk_method_p->get_name_cstr(), RF_Public | RF_RootSet);
+  UFunction * ue_method_p = NewObject<UFunction>(ue_class_p, sk_method_p->get_name_cstr(), RF_Public);
   ue_method_p->FunctionFlags |= FUNC_BlueprintCallable | FUNC_Native | FUNC_Public;
   if (sk_method_p->is_class_member())
     {
@@ -397,7 +401,7 @@ int32_t SkUEBlueprintInterface::add_function_entry(UClass * ue_class_p, SkMethod
 int32_t SkUEBlueprintInterface::add_event_entry(UClass * ue_class_p, SkMethodBase * sk_method_p, const FString & category)
   {
   // Create new UFunction
-  UFunction * ue_method_p = new(EC_InternalUseOnlyConstructor, ue_class_p, sk_method_p->get_name_cstr(), RF_Public | RF_RootSet) UFunction(FObjectInitializer(), NULL, FUNC_BlueprintEvent | FUNC_Event | FUNC_Public, UINT16_MAX);
+  UFunction * ue_method_p = new(EC_InternalUseOnlyConstructor, ue_class_p, sk_method_p->get_name_cstr(), RF_Public) UFunction(FObjectInitializer(), NULL, FUNC_BlueprintEvent | FUNC_Event | FUNC_Public, UINT16_MAX);
   ue_method_p->Bind(); // Bind to default Blueprint event mechanism
 #if WITH_EDITOR
   ue_method_p->SetMetaData(TEXT("Category"), category.IsEmpty() ? TEXT("SkookumScript") : *(TEXT("SkookumScript|") + category));
