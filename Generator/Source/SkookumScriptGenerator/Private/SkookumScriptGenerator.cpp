@@ -1404,7 +1404,19 @@ bool FSkookumScriptGenerator::can_export_property(UStruct * class_or_struct_p, U
     {
     generate_struct_from_property(property_p);
     }
-
+  else if (type_id == SkTypeID_List)
+    {
+    UProperty * element_property_p = Cast<UArrayProperty>(property_p)->Inner;
+    eSkTypeID inner_type_id = get_skookum_property_type(element_property_p);
+    if (inner_type_id == SkTypeID_Enum)
+      {
+      generate_enum_from_property(element_property_p);
+      }
+    else if (inner_type_id == SkTypeID_UStruct)
+      {
+      generate_struct_from_property(element_property_p);
+      }
+    }
   return true;
   }
 
