@@ -343,9 +343,9 @@ void FSkookumScriptGenerator::FinishExport()
 //---------------------------------------------------------------------------------------
 
 FString FSkookumScriptGenerator::GetGeneratorName() const
- {
- return TEXT("SkookumScript Binding Generator Plugin");
- }
+  {
+  return TEXT("SkookumScript Binding Generator Plugin");
+  }
 
 //=======================================================================================		//=======================================================================================
 // FSkookumScriptGenerator implementation
@@ -666,12 +666,12 @@ void FSkookumScriptGenerator::generate_struct(UStruct * struct_p, const FString 
     generate_class_binding_file(struct_p);
     }
 
-    // Also generate all parents
-    UStruct * parent_struct_p = struct_p->GetSuperStruct();
-    if (parent_struct_p)
-      {
-      generate_struct(parent_struct_p, source_header_file_name);
-      }
+  // Also generate all parents
+  UStruct * parent_struct_p = struct_p->GetSuperStruct();
+  if (parent_struct_p)
+    {
+    generate_struct(parent_struct_p, source_header_file_name);
+    }
   }
 
 //---------------------------------------------------------------------------------------
@@ -716,7 +716,7 @@ void FSkookumScriptGenerator::generate_enum_script_files(UEnum * enum_p)
     FString enum_val_full_name = enum_p->GenerateFullEnumName(*enum_val_name);
 
     FString skookified_val_name = skookify_var_name(enum_val_name);
-    if (skookified_val_name.Equals(TEXT("world")) 
+    if (skookified_val_name.Equals(TEXT("world"))
      || skookified_val_name.Equals(TEXT("random")))
       {
       skookified_val_name += TEXT("_");
@@ -1055,7 +1055,7 @@ FString FSkookumScriptGenerator::generate_this_pointer_initialization(const FStr
   }
 
 //---------------------------------------------------------------------------------------
-                                                                                         
+
 FString FSkookumScriptGenerator::generate_property_pointer_initialization(UProperty * property_p, UStruct * class_or_struct_p)
   {
   return FString::Printf(TEXT("static UProperty * property_p = SkUE%s::%s->FindPropertyByName(TEXT(\"%s\"));"),
@@ -1082,7 +1082,7 @@ FString FSkookumScriptGenerator::generate_method_out_parameter_expression(UFunct
     case SkTypeID_Rotation:
     case SkTypeID_RotationAngles:
     case SkTypeID_Transform:
-    case SkTypeID_Color:           
+    case SkTypeID_Color:
     case SkTypeID_Name:
     case SkTypeID_Enum:
     case SkTypeID_UStruct:
@@ -1101,7 +1101,7 @@ FString FSkookumScriptGenerator::generate_method_out_parameter_expression(UFunct
     default:  FError::Throwf(TEXT("Unsupported return param type: %s"), *param_p->GetClass()->GetName()); break;
     }
 
-    return FString::Printf(*fmt, param_index + 1, *param_name, *param_name);
+  return FString::Printf(*fmt, param_index + 1, *param_name, *param_name);
   }
 
 //---------------------------------------------------------------------------------------
@@ -1120,18 +1120,18 @@ FString FSkookumScriptGenerator::generate_method_parameter_assignment(UProperty 
     eSkTypeID type_id = get_skookum_property_type(param_p);
     switch (type_id)
       {
-      case SkTypeID_Integer:         
-      case SkTypeID_Real:            
-      case SkTypeID_Boolean:         
-      case SkTypeID_Vector2:         
-      case SkTypeID_Vector3:         
-      case SkTypeID_Vector4:         
-      case SkTypeID_Rotation:        
-      case SkTypeID_RotationAngles:  
-      case SkTypeID_Transform:       
+      case SkTypeID_Integer:
+      case SkTypeID_Real:
+      case SkTypeID_Boolean:
+      case SkTypeID_Vector2:
+      case SkTypeID_Vector3:
+      case SkTypeID_Vector4:
+      case SkTypeID_Rotation:
+      case SkTypeID_RotationAngles:
+      case SkTypeID_Transform:
       case SkTypeID_Name:
-      case SkTypeID_UStruct:         
-      case SkTypeID_UClass:          
+      case SkTypeID_UStruct:
+      case SkTypeID_UClass:
       case SkTypeID_UObject:       generated_code = FString::Printf(TEXT("%s = scope_p->get_arg<%s>(SkArg_%d);"), *assignee_name, *get_skookum_property_binding_class_name(param_p), param_index + 1); break;
       case SkTypeID_Enum:          generated_code = FString::Printf(TEXT("%s = (%s)scope_p->get_arg<SkEnum>(SkArg_%d);"), *assignee_name, *get_cpp_property_type_name(param_p), param_index + 1); break;
       case SkTypeID_String:        generated_code = FString::Printf(TEXT("%s = scope_p->get_arg<SkString>(SkArg_%d).as_cstr();"), *assignee_name, param_index + 1); break;
@@ -1148,7 +1148,7 @@ FString FSkookumScriptGenerator::generate_method_parameter_assignment(UProperty 
         UProperty * element_property_p = array_property_p->Inner;
         generated_code = FString::Printf(TEXT("SkUEClassBindingHelper::initialize_array_from_list<%s,%s>(&%s, scope_p->get_arg<SkList>(SkArg_%d));"),
           *get_skookum_property_binding_class_name(element_property_p),
-          *element_property_p->GetCPPType(nullptr, CPPF_ArgumentOrReturnValue), 
+          *element_property_p->GetCPPType(nullptr, CPPF_ArgumentOrReturnValue),
           *assignee_name,
           param_index + 1);
         }
@@ -1178,17 +1178,17 @@ FString FSkookumScriptGenerator::generate_property_default_ctor_argument(UProper
     case SkTypeID_Boolean:         return TEXT("false");
     case SkTypeID_Enum:            return FString::Printf(TEXT("(%s)0"), *get_cpp_property_type_name(param_p));
     case SkTypeID_List:
-    case SkTypeID_String:          
-    case SkTypeID_Name:            
+    case SkTypeID_String:
+    case SkTypeID_Name:
     case SkTypeID_Transform:
     case SkTypeID_UStruct:         return TEXT("");
-    case SkTypeID_Vector2:         
-    case SkTypeID_Vector3:         
-    case SkTypeID_Vector4:         
-    case SkTypeID_Rotation:        
-    case SkTypeID_RotationAngles:  
+    case SkTypeID_Vector2:
+    case SkTypeID_Vector3:
+    case SkTypeID_Vector4:
+    case SkTypeID_Rotation:
+    case SkTypeID_RotationAngles:
     case SkTypeID_Color:           return TEXT("ForceInitToZero");
-    case SkTypeID_UClass:          
+    case SkTypeID_UClass:
     case SkTypeID_UObject:         return TEXT("nullptr");
     default:                       FError::Throwf(TEXT("Unsupported property type: %s"), *param_p->GetClass()->GetName()); return TEXT("");
     }
@@ -1225,8 +1225,8 @@ FString FSkookumScriptGenerator::generate_return_value_passing(UProperty * retur
         {
         const UArrayProperty * array_property_p = Cast<UArrayProperty>(return_value_p);
         UProperty * element_property_p = array_property_p->Inner;
-        fmt = FString::Printf(TEXT("SkUEClassBindingHelper::list_from_array<%s,%s>(%%s)"), 
-          *get_skookum_property_binding_class_name(element_property_p), 
+        fmt = FString::Printf(TEXT("SkUEClassBindingHelper::list_from_array<%s,%s>(%%s)"),
+          *get_skookum_property_binding_class_name(element_property_p),
           *element_property_p->GetCPPType(nullptr, CPPF_ArgumentOrReturnValue));
         }
         break;
@@ -1404,7 +1404,19 @@ bool FSkookumScriptGenerator::can_export_property(UStruct * class_or_struct_p, U
     {
     generate_struct_from_property(property_p);
     }
-
+  else if (type_id == SkTypeID_List)
+    {
+    UProperty * element_property_p = Cast<UArrayProperty>(property_p)->Inner;
+    eSkTypeID inner_type_id = get_skookum_property_type(element_property_p);
+    if (inner_type_id == SkTypeID_Enum)
+      {
+      generate_enum_from_property(element_property_p);
+      }
+    else if (inner_type_id == SkTypeID_UStruct)
+      {
+      generate_struct_from_property(element_property_p);
+      }
+    }
   return true;
   }
 
@@ -1815,7 +1827,7 @@ FString FSkookumScriptGenerator::get_comment_block(UField * field_p)
 FString FSkookumScriptGenerator::get_skookum_default_initializer(UFunction * function_p, UProperty * param_p)
   {
   FString default_value;
-// This is disabled for now until Epic has made some requested changes in HeaderParser.cpp
+  // This is disabled for now until Epic has made some requested changes in HeaderParser.cpp
 #if 0
   bool has_default_value = function_p->HasMetaData(*param_p->GetName());
   if (has_default_value)
@@ -1843,15 +1855,15 @@ FString FSkookumScriptGenerator::get_skookum_default_initializer(UFunction * fun
         case SkTypeID_Real:            default_value = TEXT("0.0"); break;
         case SkTypeID_Boolean:         default_value = TEXT("false"); break;
         case SkTypeID_String:          default_value = TEXT("\"\""); break;
-        case SkTypeID_Name:            
-        case SkTypeID_Vector2:         
-        case SkTypeID_Vector3:         
-        case SkTypeID_Vector4:         
-        case SkTypeID_Rotation:        
-        case SkTypeID_RotationAngles:  
-        case SkTypeID_Transform:       
+        case SkTypeID_Name:
+        case SkTypeID_Vector2:
+        case SkTypeID_Vector3:
+        case SkTypeID_Vector4:
+        case SkTypeID_Rotation:
+        case SkTypeID_RotationAngles:
+        case SkTypeID_Transform:
         case SkTypeID_Color:           default_value = ms_sk_type_id_names[type_id] + TEXT("!"); break;
-        case SkTypeID_UClass:          
+        case SkTypeID_UClass:
         case SkTypeID_UObject:         default_value = skookify_class_name(Cast<UObjectPropertyBase>(param_p)->PropertyClass->GetName()) + TEXT("!null"); break;
         }
       }

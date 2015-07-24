@@ -116,17 +116,7 @@ UClass * SkUEClassBindingHelper::add_dynamic_class_mapping(SkClassDescBase * sk_
   // Dynamic classes have blueprints - look it up by name
   FString class_name(sk_class_p->get_name_cstr());
   UBlueprint * blueprint_p = FindObject<UBlueprint>(ANY_PACKAGE, *class_name);
-  if (!blueprint_p)
-    {
-    blueprint_p = LoadObject<UBlueprint>(SkUEClassBindingHelper::get_world(), *class_name);
-    if (!blueprint_p)
-      {
-      UClass * blueprint_class_p = FindObject<UClass>(ANY_PACKAGE, *(class_name + TEXT("_C")));
-      if (!blueprint_class_p) return nullptr;
-      blueprint_p = Cast<UBlueprint>(blueprint_class_p->ClassGeneratedBy);
-      if (!blueprint_p) return nullptr;
-      }
-    }
+  if (!blueprint_p) return nullptr;
 
   // Add to map of known class equivalences
   ms_dynamic_class_map_u2s.Add(blueprint_p, sk_class_p);

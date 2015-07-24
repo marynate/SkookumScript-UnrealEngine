@@ -184,6 +184,10 @@ void SkUERuntime::deinit()
     }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Clears out Blueprint interface mappings
+  SkUEBlueprintInterface::get()->clear();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unloads SkookumScript and cleans-up
   SkookumScript::deinitialize_session();
   SkookumScript::deinitialize();
