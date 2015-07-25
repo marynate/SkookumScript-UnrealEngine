@@ -1431,7 +1431,10 @@ bool FSkookumScriptGenerator::is_property_type_supported(UProperty * property_p)
     {
     return false;
     }
-
+  if (property_p->GetPropertyFlags() & CPF_EditorOnly)
+    {
+    return false;
+    }
   return (get_skookum_property_type(property_p) != SkTypeID_None);
   }
 
