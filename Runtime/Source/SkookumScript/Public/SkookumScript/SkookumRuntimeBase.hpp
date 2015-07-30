@@ -88,9 +88,8 @@ class SkookumRuntimeBase
       virtual SkBinaryHandle * get_binary_hierarchy() = 0;
       virtual SkBinaryHandle * get_binary_class_group(const SkClass & cls) = 0;
 
-      // Only needed for debugging - not needed in user/final/release build
-      #if (SKOOKUM & SK_DEBUG) && defined(A_SYMBOL_STR_DB)
-  
+      // Only needed when a symbol table is desired
+      #if defined(A_SYMBOL_STR_DB_AGOG)  
         virtual SkBinaryHandle * get_binary_symbol_table() = 0;
       #endif
 

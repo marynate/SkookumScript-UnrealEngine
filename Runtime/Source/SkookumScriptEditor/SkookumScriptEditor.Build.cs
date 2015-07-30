@@ -6,6 +6,29 @@ namespace UnrealBuildTool.Rules
 	{
 		public SkookumScriptEditor(TargetInfo Target)
 		{
+      // NOTE: All modules inside the SkookumScript plugin folder must use the exact same definitions!
+      switch (Target.Configuration)
+      {
+      case UnrealTargetConfiguration.Debug:
+      case UnrealTargetConfiguration.DebugGame:
+        Definitions.Add("A_EXTRA_CHECK=1");
+        Definitions.Add("A_UNOPTIMIZED=1");
+        Definitions.Add("SKOOKUM=31");
+        break;
+
+      case UnrealTargetConfiguration.Development:
+      case UnrealTargetConfiguration.Test:
+        Definitions.Add("A_EXTRA_CHECK=1");
+        Definitions.Add("SKOOKUM=31");
+        break;
+
+      case UnrealTargetConfiguration.Shipping:
+        Definitions.Add("A_SYMBOL_STR_DB=1");
+        Definitions.Add("A_NO_SYMBOL_REF_LINK=1");
+        Definitions.Add("SKOOKUM=8");
+        break;
+      }
+      
 			PublicIncludePaths.AddRange(
 				new string[] {					
 					//"Programs/UnrealHeaderTool/Public",

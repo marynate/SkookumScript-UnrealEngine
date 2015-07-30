@@ -73,6 +73,12 @@ void FSkookumScriptEditor::ShutdownModule()
 
 void FSkookumScriptEditor::on_class_updated(SkClass * sk_class_p, UClass * ue_class_p)
   {
+  // Don't do anything if invoked from the command line
+  if (IsRunningCommandlet())
+    {
+    return;
+    }
+
   // 1) Refresh actions (in Blueprint editor drop down menu)
   FBlueprintActionDatabase::Get().RefreshClassActions(ue_class_p);
 

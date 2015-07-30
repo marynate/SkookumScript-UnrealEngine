@@ -105,9 +105,9 @@ class AMemory
     static uint32_t       request_pointer_count_expand(uint32_t pointers_requested);
 
     template<typename _ObjectType, typename... _ParamClasses>
-    static _ObjectType *  new_object(const char * name_p, _ParamClasses... constructor_args);
+    static _ObjectType *  new_object(const char * name_p, const _ParamClasses & ... constructor_args);
     template<typename _ObjectType, typename... _ParamClasses>
-    static _ObjectType *  new_array(size_t num_objects, const char * name_p, _ParamClasses... constructor_args);
+    static _ObjectType *  new_array(size_t num_objects, const char * name_p, const _ParamClasses & ... constructor_args);
 
     template<typename _ObjectType>
     static void           delete_object(_ObjectType * obj_p);
@@ -191,7 +191,7 @@ inline uint32_t AMemory::request_pointer_count_expand(uint32_t pointers_requeste
 // Similar to operator new, except
 // explicitely uses well-defined allocator ms_malloc_func() to get the memory
 template<typename _ObjectType, typename... _ParamClasses>
-inline _ObjectType * AMemory::new_object(const char * name_p, _ParamClasses... constructor_args)
+inline _ObjectType * AMemory::new_object(const char * name_p, const _ParamClasses & ... constructor_args)
   {
   // Get memory
   _ObjectType * obj_p = reinterpret_cast<_ObjectType *>(ms_malloc_func(sizeof(_ObjectType), name_p));
@@ -206,7 +206,7 @@ inline _ObjectType * AMemory::new_object(const char * name_p, _ParamClasses... c
 // 2) uses well-defined allocator ms_malloc_func() to get the memory
 // 3) allows constructor arguments to be passed to each object construction
 template<typename _ObjectType, typename... _ParamClasses>
-inline _ObjectType * AMemory::new_array(size_t num_objects, const char * name_p, _ParamClasses... constructor_args)
+inline _ObjectType * AMemory::new_array(size_t num_objects, const char * name_p, const _ParamClasses & ... constructor_args)
   {
   // Get memory
   _ObjectType * array_p = reinterpret_cast<_ObjectType *>(ms_malloc_func(num_objects * sizeof(_ObjectType), name_p));

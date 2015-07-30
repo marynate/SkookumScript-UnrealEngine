@@ -261,7 +261,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>A_SYMBOL_STR_DB;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;WIN32;WIN32_LEAN_AND_MEAN;WINVER=0x0600;_WIN32_WINDOWS=0x0600;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>A_SYMBOL_STR_DB;A_NO_SYMBOL_REF_LINK;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;WIN32;WIN32_LEAN_AND_MEAN;WINVER=0x0600;_WIN32_WINDOWS=0x0600;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <StringPooling>true</StringPooling>
@@ -282,7 +282,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>A_SYMBOL_STR_DB;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;WIN32;WIN32_LEAN_AND_MEAN;WINVER=0x0600;_WIN32_WINDOWS=0x0600;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>A_SYMBOL_STR_DB;A_NO_SYMBOL_REF_LINK;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;WIN32;WIN32_LEAN_AND_MEAN;WINVER=0x0600;_WIN32_WINDOWS=0x0600;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <StringPooling>true</StringPooling>

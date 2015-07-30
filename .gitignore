@@ -7,7 +7,6 @@ CMakeLists.txt
 /Runtime/Scripts/Engine-Generated/**
 /Runtime/*.bat
 /Runtime/*.py
-/Runtime/Source/AgogCore/Lib/Win32/**
 /Runtime/SkookumIDE/Skookum-user.ini
 
 /Runtime/*2013*.*

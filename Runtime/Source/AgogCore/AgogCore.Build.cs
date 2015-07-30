@@ -27,8 +27,9 @@ public class AgogCore : ModuleRules
       break;
     }
 
-    string libNameSuffix = "";
-    
+    string libNameSuffix = "";   
+
+    // NOTE: All modules inside the SkookumScript plugin folder must use the exact same definitions!
     switch (Target.Configuration)
     {
     case UnrealTargetConfiguration.Debug:
@@ -36,18 +37,7 @@ public class AgogCore : ModuleRules
       Definitions.Add("A_EXTRA_CHECK=1");
       Definitions.Add("A_UNOPTIMIZED=1");
       Definitions.Add("SKOOKUM=31");
-      
-      if (BuildConfiguration.bDebugBuildsActuallyUseDebugCRT)
-      {
-        // Use Debug C run-time
-        libNameSuffix = "-Debug.lib";
-      }
-      else
-      {
-        // Use Optimized C run-time
-        libNameSuffix = "-DebugCRTOpt.lib";
-      }
-
+      libNameSuffix = BuildConfiguration.bDebugBuildsActuallyUseDebugCRT ? "-Debug.lib" : "-DebugCRTOpt.lib";
       break;
 
     case UnrealTargetConfiguration.Development:
@@ -59,6 +49,7 @@ public class AgogCore : ModuleRules
 
     case UnrealTargetConfiguration.Shipping:
       Definitions.Add("A_SYMBOL_STR_DB=1");
+      Definitions.Add("A_NO_SYMBOL_REF_LINK=1");
       Definitions.Add("SKOOKUM=8");
       libNameSuffix = "-Shipping.lib";
       break;

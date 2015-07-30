@@ -53,9 +53,7 @@ class SkUERuntime : public SkookumRuntimeBase
         virtual SkBinaryHandle * get_binary_class_group(const SkClass & cls) override;
         virtual void             release_binary(SkBinaryHandle * handle_p) override;
 
-        // Only needed for debugging - not needed in user/final/release build
-        #if (SKOOKUM & SK_DEBUG) && defined(A_SYMBOL_STR_DB)
-  
+        #if defined(A_SYMBOL_STR_DB_AGOG)  
           virtual SkBinaryHandle * get_binary_symbol_table() override;
         #endif
 

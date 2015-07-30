@@ -329,7 +329,7 @@ bool SkUERemote::spawn_remote_ide()
   // Look for Skookum IDE in game/project plug-in folder first.
   FString ide_path(
     FPaths::GamePluginsDir()
-    / TEXT("SkookumScript/Runtime/SkookumIDE/SkookumIDE") TEXT(SK_BITS_ID) TEXT(".exe"));
+    / TEXT("SkookumScript/Runtime/SkookumIDE/SkookumIDE") /*TEXT(SK_BITS_ID)*/ TEXT(".exe"));
 
   bool ide_exists = FPaths::FileExists(ide_path);
 
@@ -340,7 +340,7 @@ bool SkUERemote::spawn_remote_ide()
 
     // Don't change ide_path yet so the game version stays the default if neither found.
     FString ide_engine_path(
-      FPaths::EnginePluginsDir() / TEXT("SkookumScript/Runtime/SkookumIDE/SkookumIDE") TEXT(SK_BITS_ID) TEXT(".exe"));
+      FPaths::EnginePluginsDir() / TEXT("SkookumScript/Runtime/SkookumIDE/SkookumIDE") /*TEXT(SK_BITS_ID)*/ TEXT(".exe"));
 
     ide_exists = FPaths::FileExists(ide_engine_path);
 

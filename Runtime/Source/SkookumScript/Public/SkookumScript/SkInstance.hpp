@@ -110,7 +110,7 @@ class SkInstance : public SkObjectBase, public ARefCountMix<SkInstance>
     //---------------------------------------------------------------------------------------
     // Allocate (from pool) and construct a new SkInstance of using _BindingClass
     template <class _BindingClass, typename... _ParamClasses>
-    static SkInstance * new_instance(_ParamClasses... args) 
+    static SkInstance * new_instance(const _ParamClasses & ... args) 
       { 
       return _BindingClass::new_instance(args...); 
       }
@@ -118,7 +118,7 @@ class SkInstance : public SkObjectBase, public ARefCountMix<SkInstance>
     //---------------------------------------------------------------------------------------
     // Allocate memory for internal data (if necessary) and invoke constructor
     template <class _BindingClass, typename... _ParamClasses>
-    typename _BindingClass::tDataType & construct(_ParamClasses... constructor_args)
+    typename _BindingClass::tDataType & construct(const _ParamClasses & ... constructor_args)
       { 
       return static_cast<_BindingClass*>(this)->construct(constructor_args...); 
       }

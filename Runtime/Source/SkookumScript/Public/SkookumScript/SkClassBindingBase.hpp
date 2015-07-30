@@ -51,12 +51,12 @@ class SkClassBindingBase : public SkClassBindingAbstract<_BindingClass>, public 
     //---------------------------------------------------------------------------------------
     // Allocate and initialize a new instance of this SkookumScript type
     template <typename... tParamClasses>
-    static SkInstance * new_instance(tParamClasses... args);
+    static SkInstance * new_instance(const tParamClasses & ... args);
 
     //---------------------------------------------------------------------------------------
     // Initialize an existing instance of this SkookumScript type
     template <typename... tParamClasses>
-    _DataType & construct(tParamClasses... constructor_args);
+    _DataType & construct(const tParamClasses & ... constructor_args);
 
     //---------------------------------------------------------------------------------------
     // Deinitialize an existing instance of this SkookumScript type
@@ -93,7 +93,7 @@ class SkClassBindingBase : public SkClassBindingAbstract<_BindingClass>, public 
 
 template<class _BindingClass, typename _DataType>
 template<typename... tParamClasses>
-inline SkInstance * SkClassBindingBase<_BindingClass, _DataType>::new_instance(tParamClasses... constructor_args)
+inline SkInstance * SkClassBindingBase<_BindingClass, _DataType>::new_instance(const tParamClasses & ... constructor_args)
   {
   SkInstance * instance_p = SkInstance::new_instance(tBindingAbstract::ms_class_p);
 
@@ -106,7 +106,7 @@ inline SkInstance * SkClassBindingBase<_BindingClass, _DataType>::new_instance(t
 
 template<class _BindingClass, typename _DataType>
 template<typename... tParamClasses>
-inline _DataType & SkClassBindingBase<_BindingClass, _DataType>::construct(tParamClasses... constructor_args)
+inline _DataType & SkClassBindingBase<_BindingClass, _DataType>::construct(const tParamClasses & ... constructor_args)
   {
   if (sizeof(_DataType) <= sizeof(m_user_data))
     {

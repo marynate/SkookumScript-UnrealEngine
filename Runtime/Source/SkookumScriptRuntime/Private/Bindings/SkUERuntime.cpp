@@ -106,28 +106,32 @@ void SkUERuntime::on_init()
     }
 
   #ifdef SKOOKUM_REMOTE_UNREAL
-    // Auto-connect to remote IDE
-    if (SkookumRemoteRuntimeBase::ms_client_p->ensure_connected())
+    // Only bother connecting if not running on the command line)
+    if (!IsRunningCommandlet())
       {
-      // Ensure compiled binaries are up to date
-      switch (SkookumRemoteRuntimeBase::ms_client_p->ensure_compiled())
+      // Auto-connect to remote IDE
+      if (SkookumRemoteRuntimeBase::ms_client_p->ensure_connected())
         {
-        case AConfirm_yes: 
-          SkDebug::print("\nSkookumNet: Compiled binaries are up-to-date.\n");
-          break;
+        // Ensure compiled binaries are up to date
+        switch (SkookumRemoteRuntimeBase::ms_client_p->ensure_compiled())
+          {
+          case AConfirm_yes: 
+            SkDebug::print("\nSkookumNet: Compiled binaries are up-to-date.\n");
+            break;
 
-        case AConfirm_no:
-          // $Revisit - CReis If not compiled then load old or quit
-          SkDebug::print("\nSkookumNet: Compiled binaries are *not* up-to-date.\n", SkLocale_all, SkDPrintType_warning);
-          break;
+          case AConfirm_no:
+            // $Revisit - CReis If not compiled then load old or quit
+            SkDebug::print("\nSkookumNet: Compiled binaries are *not* up-to-date.\n", SkLocale_all, SkDPrintType_warning);
+            break;
 
-        default: // AConfirm_abort
-          SkDebug::print("\nSkookumNet: Timed out while compiling binaries.\n", SkLocale_all, SkDPrintType_warning);
+          default: // AConfirm_abort
+            SkDebug::print("\nSkookumNet: Timed out while compiling binaries.\n", SkLocale_all, SkDPrintType_warning);
+          }
         }
-      }
-    else
-      {
-      SkDebug::print("\nSkookumNet: Timed out trying to connect!\n", SkLocale_all, SkDPrintType_warning);
+      else
+        {
+        SkDebug::print("\nSkookumNet: Timed out trying to connect!\n", SkLocale_all, SkDPrintType_warning);
+        }
       }
   #endif  // SKOOKUM_REMOTE_UNREAL
 
@@ -203,7 +207,7 @@ const FString & SkUERuntime::get_compiled_path() const
   if (!m_compiled_file_b)
     {
     m_compiled_path =
-      FPaths::GameContentDir() / TEXT("SkookumScript/Compiled") TEXT(SK_BITS_ID);
+      FPaths::GameContentDir() / TEXT("SkookumScript") /*TEXT(SK_BITS_ID)*/;
 
     FString compiled_file = m_compiled_path / TEXT("Classes.sk-bin");
 
@@ -215,7 +219,7 @@ const FString & SkUERuntime::get_compiled_path() const
       // Don't change m_compiled_path yet so the game content version stays the default if
       // neither the game nor engine versions are found.
       FString compiled_path =
-        FPaths::EngineContentDir() / TEXT("SkookumScript/Compiled") TEXT(SK_BITS_ID);
+        FPaths::EngineContentDir() / TEXT("SkookumScript") /*TEXT(SK_BITS_ID)*/;
 
       compiled_file = compiled_path / TEXT("Classes.sk-bin");
 
@@ -345,8 +349,8 @@ SkBinaryHandle * SkUERuntime::get_binary_class_group(const SkClass & cls)
   }
 
 
-#if (SKOOKUM & SK_DEBUG) && defined(A_SYMBOL_STR_DB)
-  
+#if defined(A_SYMBOL_STR_DB_AGOG)  
+
 //---------------------------------------------------------------------------------------
 // Gets memory representing binary for class hierarchy and associated info.
 // 
