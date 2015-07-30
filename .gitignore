@@ -10,7 +10,6 @@ CMakeLists.txt
 /Runtime/SkookumIDE/Skookum-user.ini
 
 /Runtime/*2013*.*
-/Runtime/Source/SkookumScript/Lib/Win32/**
 /Runtime/Source/SkookumScript/*2013*.*
 /Runtime/Source/SkookumScript/Private/**
 /Runtime/Source/SkookumLibs*.*
