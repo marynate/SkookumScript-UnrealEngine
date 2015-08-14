@@ -71,12 +71,12 @@ void USkookumScriptComponent::OnRegister()
           }
 
         // Find most derived UE4 class known to SkookumScript
-        class_p = nullptr;
-        for (UClass * obj_uclass_p = actor_p->GetClass(); !class_p && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
+        SkClass * mapped_super_class_p = nullptr;
+        for (UClass * obj_uclass_p = actor_p->GetClass(); !mapped_super_class_p && obj_uclass_p; obj_uclass_p = obj_uclass_p->GetSuperClass())
           {
-          class_p = SkUEClassBindingHelper::get_sk_class_from_ue_class(obj_uclass_p);
+          mapped_super_class_p = SkUEClassBindingHelper::get_sk_class_from_ue_class(obj_uclass_p);
           }
-        SK_ASSERTX(class_p && class_p == known_super_class_p, a_cstr_format("Script Class Name '%s' in SkookumScriptComponent of '%S' is not properly related to Actor. Both the Script Class Name '%s' and the UE4 class of '%S' ('%S') must share the topmost ancestor class known to both SkookumScript and UE4. Right now these ancestor classes are different ('%s' for '%s' and '%s' for '%S').", class_name_ascii.as_cstr(), *actor_p->GetName(), class_name_ascii.as_cstr(), *actor_p->GetName(), *actor_p->GetClass()->GetName(), known_super_class_p ? known_super_class_p->get_name_cstr_dbg() : "<none>", class_name_ascii.as_cstr(), class_p ? class_p->get_name_cstr_dbg() : "<none>", *actor_p->GetClass()->GetName()));
+        SK_ASSERTX(mapped_super_class_p && mapped_super_class_p == known_super_class_p, a_cstr_format("Script Class Name '%s' in SkookumScriptComponent of '%S' is not properly related to Actor. Both the Script Class Name '%s' and the UE4 class of '%S' ('%S') must share the topmost ancestor class known to both SkookumScript and UE4. Right now these ancestor classes are different ('%s' for '%s' and '%s' for '%S').", class_name_ascii.as_cstr(), *actor_p->GetName(), class_name_ascii.as_cstr(), *actor_p->GetName(), *actor_p->GetClass()->GetName(), known_super_class_p ? known_super_class_p->get_name_cstr_dbg() : "<none>", class_name_ascii.as_cstr(), mapped_super_class_p ? mapped_super_class_p->get_name_cstr_dbg() : "<none>", *actor_p->GetClass()->GetName()));
       #endif
       }
     else
