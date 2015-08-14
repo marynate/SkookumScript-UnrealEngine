@@ -96,6 +96,8 @@ class ASymbolTable
 
     static ASymbolTable & get_main();
 
+    ASymbolRef * get_symbol_by_index(uint32_t index) const;
+
   protected:
 
     ASymbolRef * get_symbol(uint32_t id) const;

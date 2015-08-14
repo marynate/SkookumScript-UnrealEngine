@@ -16,7 +16,7 @@
 
 TMap<UClass*, SkClass*>                             SkUEClassBindingHelper::ms_static_class_map_u2s;
 TMap<SkClassDescBase*, UClass*>                     SkUEClassBindingHelper::ms_static_class_map_s2u;
-#if WITH_EDITOR
+#if WITH_EDITORONLY_DATA
 TMap<SkClassDescBase*, TWeakObjectPtr<UBlueprint>>  SkUEClassBindingHelper::ms_dynamic_class_map_s2u;
 TMap<UBlueprint*, SkClass*>                         SkUEClassBindingHelper::ms_dynamic_class_map_u2s;
 #endif
@@ -105,7 +105,7 @@ void SkUEClassBindingHelper::add_static_class_mapping(SkClass * sk_class_p, UCla
   ms_static_class_map_s2u.Add(sk_class_p, ue_class_p);
   }
 
-#if WITH_EDITOR
+#if WITH_EDITORONLY_DATA
 //---------------------------------------------------------------------------------------
 
 UClass * SkUEClassBindingHelper::add_dynamic_class_mapping(SkClassDescBase * sk_class_desc_p)
@@ -144,7 +144,7 @@ SkClass * SkUEClassBindingHelper::add_dynamic_class_mapping(UBlueprint * bluepri
   return sk_class_p;
   }
 
-#else // !WITH_EDITOR = cooked data build
+#else // !WITH_EDITORONLY_DATA = cooked data build
 //---------------------------------------------------------------------------------------
 
 UClass * SkUEClassBindingHelper::add_static_class_mapping(SkClassDescBase * sk_class_desc_p)

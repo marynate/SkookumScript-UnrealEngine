@@ -177,22 +177,21 @@
 inline static void a_byte_stream_out32(void ** dest_stream_pp, const void * source_p)
   {
   uint8_t * dest_p = (uint8_t *)*dest_stream_pp;
-
-  *((uint8_t *)dest_p)       = *((uint8_t *)source_p);
-  *(((uint8_t *)dest_p) + 1) = *(((uint8_t *)source_p) + 1);
-  *(((uint8_t *)dest_p) + 2) = *(((uint8_t *)source_p) + 2);
-  *(((uint8_t *)dest_p) + 3) = *(((uint8_t *)source_p) + 3);
-
-  (*(uint32_t **)(dest_stream_pp))++;
+  dest_p[0] = ((uint8_t *)source_p)[0];
+  dest_p[1] = ((uint8_t *)source_p)[1];
+  dest_p[2] = ((uint8_t *)source_p)[2];
+  dest_p[3] = ((uint8_t *)source_p)[3];
+  *dest_stream_pp = dest_p + sizeof(uint32_t);
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static void a_byte_stream_out16(void ** dest_stream_pp, const void * source_p)
   {
-  **((uint8_t **)dest_stream_pp)      = *((uint8_t *)source_p);
-  *(((uint8_t *)*dest_stream_pp) + 1) = *(((uint8_t *)source_p) + 1);
-  (*(uint16_t **)(dest_stream_pp))++;
+  uint8_t * dest_p = (uint8_t *)*dest_stream_pp;
+  dest_p[0] = ((uint8_t *)source_p)[0];
+  dest_p[1] = ((uint8_t *)source_p)[1];
+  *dest_stream_pp = dest_p + sizeof(uint16_t);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,22 +203,21 @@ inline static void a_byte_stream_out16(void ** dest_stream_pp, const void * sour
 inline static void a_byte_stream_swap_out32(void ** dest_stream_pp, const void * source_p)
   {
   uint8_t * dest_p = (uint8_t *)*dest_stream_pp;
-
-  *((uint8_t *)dest_p)       = *(((uint8_t *)source_p) + 3);
-  *(((uint8_t *)dest_p) + 1) = *(((uint8_t *)source_p) + 2);
-  *(((uint8_t *)dest_p) + 2) = *(((uint8_t *)source_p) + 1);
-  *(((uint8_t *)dest_p) + 3) = *((uint8_t *)source_p);
-
-  (*(uint32_t **)(dest_stream_pp))++;
+  dest_p[0] = ((uint8_t *)source_p)[3];
+  dest_p[1] = ((uint8_t *)source_p)[2];
+  dest_p[2] = ((uint8_t *)source_p)[1];
+  dest_p[3] = ((uint8_t *)source_p)[0];
+  *dest_stream_pp = dest_p + sizeof(uint32_t);
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static void a_byte_stream_swap_out16(void ** dest_stream_pp, const void * source_p)
   {
-  **((uint8_t **)dest_stream_pp)      = *(((uint8_t *)source_p) + 1);
-  *(((uint8_t *)*dest_stream_pp) + 1) = *((uint8_t *)source_p);
-  (*(uint16_t **)(dest_stream_pp))++;
+  uint8_t * dest_p = (uint8_t *)*dest_stream_pp;
+  dest_p[0] = ((uint8_t *)source_p)[1];
+  dest_p[1] = ((uint8_t *)source_p)[0];
+  *dest_stream_pp = dest_p + sizeof(uint16_t);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -230,41 +228,33 @@ inline static void a_byte_stream_swap_out16(void ** dest_stream_pp, const void *
 // Author(s):   Conan Reis
 inline static void a_assign32_byte(void * dest_p, const void * source_p)
   {
-  *((uint8_t *)dest_p)       = *(uint8_t *)source_p;
-  *(((uint8_t *)dest_p) + 1) = *((uint8_t *)source_p + 1);
-  *(((uint8_t *)dest_p) + 2) = *((uint8_t *)source_p + 2);
-  *(((uint8_t *)dest_p) + 3) = *((uint8_t *)source_p + 3);
+  ((uint8_t *)dest_p)[0] = ((uint8_t *)source_p)[0];
+  ((uint8_t *)dest_p)[1] = ((uint8_t *)source_p)[1];
+  ((uint8_t *)dest_p)[2] = ((uint8_t *)source_p)[2];
+  ((uint8_t *)dest_p)[3] = ((uint8_t *)source_p)[3];
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static void a_assign32_byte_inc(void * dest_p, const void ** source_pp)
   {
-  uint8_t * data_p = (uint8_t *)*source_pp;
-
-  *((uint8_t *)dest_p)       = *data_p;
-  *(((uint8_t *)dest_p) + 1) = *(data_p + 1);
-  *(((uint8_t *)dest_p) + 2) = *(data_p + 2);
-  *(((uint8_t *)dest_p) + 3) = *(data_p + 3);
-
-  (*(uint32_t **)(source_pp))++;
+  ((uint8_t *)dest_p)[0] = ((uint8_t *)*source_pp)[0];
+  ((uint8_t *)dest_p)[1] = ((uint8_t *)*source_pp)[1];
+  ((uint8_t *)dest_p)[2] = ((uint8_t *)*source_pp)[2];
+  ((uint8_t *)dest_p)[3] = ((uint8_t *)*source_pp)[3];
+  (*(uint32_t **)source_pp)++;
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static uint32_t a_as_uint32_t_byte_inc(const void ** source_pp)
   {
-  uint32_t  value;
-  uint8_t * dest_p = (uint8_t *)&value;
-  uint8_t * data_p = (uint8_t *)*source_pp;
-
-  *dest_p       = *data_p;
-  *(dest_p + 1) = *(data_p + 1);
-  *(dest_p + 2) = *(data_p + 2);
-  *(dest_p + 3) = *(data_p + 3);
-
-  (*(uint32_t **)(source_pp))++;
-
+  uint32_t value;
+  ((uint8_t *)&value)[0] = ((uint8_t *)*source_pp)[0];
+  ((uint8_t *)&value)[1] = ((uint8_t *)*source_pp)[1];
+  ((uint8_t *)&value)[2] = ((uint8_t *)*source_pp)[2];
+  ((uint8_t *)&value)[3] = ((uint8_t *)*source_pp)[3];
+  (*(uint32_t **)source_pp)++;
   return value;
   }
 
@@ -272,15 +262,11 @@ inline static uint32_t a_as_uint32_t_byte_inc(const void ** source_pp)
 // Author(s):   Conan Reis
 inline static uint32_t a_as_uint32_t_byte(const void * source_p)
   {
-  uint32_t  value;
-  uint8_t * dest_p = (uint8_t *)&value;
-  uint8_t * data_p = (uint8_t *)source_p;
-
-  *dest_p       = *data_p;
-  *(dest_p + 1) = *(data_p + 1);
-  *(dest_p + 2) = *(data_p + 2);
-  *(dest_p + 3) = *(data_p + 3);
-
+  uint32_t value;
+  ((uint8_t *)&value)[0] = ((uint8_t *)source_p)[0];
+  ((uint8_t *)&value)[1] = ((uint8_t *)source_p)[1];
+  ((uint8_t *)&value)[2] = ((uint8_t *)source_p)[2];
+  ((uint8_t *)&value)[3] = ((uint8_t *)source_p)[3];
   return value;
   }
 
@@ -288,30 +274,26 @@ inline static uint32_t a_as_uint32_t_byte(const void * source_p)
 // Author(s):   Conan Reis
 inline static void a_assign16_byte(void * dest_p, const void ** source_pp)
   {
-  *((uint8_t *)dest_p)       = **((uint8_t **)source_pp);
-  *(((uint8_t *)dest_p) + 1) = *(((uint8_t *)*source_pp) + 1);
+  ((uint8_t *)dest_p)[0] = ((uint8_t *)*source_pp)[0];
+  ((uint8_t *)dest_p)[1] = ((uint8_t *)*source_pp)[1];
   }
 
 //---------------------------------------------------------------------------------------
 inline static void a_assign16_byte_inc(void * dest_p, const void ** source_pp)
   {
-  *((uint8_t *)dest_p)       = **((uint8_t **)source_pp);
-  *(((uint8_t *)dest_p) + 1) = *(((uint8_t *)*source_pp) + 1);
-  (*(uint16_t **)(source_pp))++;
+  ((uint8_t *)dest_p)[0] = ((uint8_t *)*source_pp)[0];
+  ((uint8_t *)dest_p)[1] = ((uint8_t *)*source_pp)[1];
+  (*(uint16_t **)source_pp)++;
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static uint16_t a_as_uint16_t_byte_inc(const void ** source_pp)
   {
-  uint16_t  value;
-  uint8_t * dest_p = (uint8_t *)&value;
-
-  *(dest_p)     = *(((uint8_t *)*source_pp) + 1);
-  *(dest_p + 1) = **((uint8_t **)source_pp);
-
-  (*(uint16_t **)(source_pp))++;
-
+  uint16_t value;
+  ((uint8_t *)&value)[0] = ((uint8_t *)*source_pp)[0];
+  ((uint8_t *)&value)[1] = ((uint8_t *)*source_pp)[1];
+  (*(uint16_t **)source_pp)++;
   return value;
   }
 
@@ -324,41 +306,33 @@ inline static uint16_t a_as_uint16_t_byte_inc(const void ** source_pp)
 // Author(s):   Conan Reis
 inline static void a_assign32_swap(void * dest_p, const void * source_p)
   {
-  *((uint8_t *)dest_p)       = *((uint8_t *)source_p + 3);
-  *(((uint8_t *)dest_p) + 1) = *((uint8_t *)source_p + 2);
-  *(((uint8_t *)dest_p) + 2) = *((uint8_t *)source_p + 1);
-  *(((uint8_t *)dest_p) + 3) = *(uint8_t *)source_p;
+  ((uint8_t *)dest_p)[0] = ((uint8_t *)source_p)[3];
+  ((uint8_t *)dest_p)[1] = ((uint8_t *)source_p)[2];
+  ((uint8_t *)dest_p)[2] = ((uint8_t *)source_p)[1];
+  ((uint8_t *)dest_p)[3] = ((uint8_t *)source_p)[0];
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static void a_assign32_swap_inc(void * dest_p, const void ** source_pp)
   {
-  uint8_t * data_p = (uint8_t *)*source_pp;
-
-  *((uint8_t *)dest_p)       = *(data_p + 3);
-  *(((uint8_t *)dest_p) + 1) = *(data_p + 2);
-  *(((uint8_t *)dest_p) + 2) = *(data_p + 1);
-  *(((uint8_t *)dest_p) + 3) = *data_p;
-
-  (*(uint32_t **)(source_pp))++;
+  ((uint8_t *)dest_p)[0] = ((uint8_t *)*source_pp)[3];
+  ((uint8_t *)dest_p)[1] = ((uint8_t *)*source_pp)[2];
+  ((uint8_t *)dest_p)[2] = ((uint8_t *)*source_pp)[1];
+  ((uint8_t *)dest_p)[3] = ((uint8_t *)*source_pp)[0];
+  (*(uint32_t **)source_pp)++;
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static uint32_t a_as_uint32_t_swap_inc(const void ** source_pp)
   {
-  uint32_t  value;
-  uint8_t * dest_p = (uint8_t *)&value;
-  uint8_t * data_p = (uint8_t *)*source_pp;
-
-  *dest_p       = *(data_p + 3);
-  *(dest_p + 1) = *(data_p + 2);
-  *(dest_p + 2) = *(data_p + 1);
-  *(dest_p + 3) = *data_p;
-
-  (*(uint32_t **)(source_pp))++;
-
+  uint32_t value;
+  ((uint8_t *)&value)[0] = ((uint8_t *)*source_pp)[3];
+  ((uint8_t *)&value)[1] = ((uint8_t *)*source_pp)[2];
+  ((uint8_t *)&value)[2] = ((uint8_t *)*source_pp)[1];
+  ((uint8_t *)&value)[3] = ((uint8_t *)*source_pp)[0];
+  (*(uint32_t **)source_pp)++;
   return value;
   }
 
@@ -366,15 +340,11 @@ inline static uint32_t a_as_uint32_t_swap_inc(const void ** source_pp)
 // Author(s):   Conan Reis
 inline static uint32_t a_as_uint32_t_swap(const void * source_p)
   {
-  uint32_t  value;
-  uint8_t * dest_p = (uint8_t *)&value;
-  uint8_t * data_p = (uint8_t *)source_p;
-
-  *dest_p       = *(data_p + 3);
-  *(dest_p + 1) = *(data_p + 2);
-  *(dest_p + 2) = *(data_p + 1);
-  *(dest_p + 3) = *data_p;
-
+  uint32_t value;
+  ((uint8_t *)&value)[0] = ((uint8_t *)source_p)[3];
+  ((uint8_t *)&value)[1] = ((uint8_t *)source_p)[2];
+  ((uint8_t *)&value)[2] = ((uint8_t *)source_p)[1];
+  ((uint8_t *)&value)[3] = ((uint8_t *)source_p)[0];
   return value;
   }
 
@@ -382,31 +352,27 @@ inline static uint32_t a_as_uint32_t_swap(const void * source_p)
 // Author(s):   Conan Reis
 inline static void a_assign16_swap(void * dest_p, const void ** source_pp)
   {
-  *((uint8_t *)dest_p)       = *(((uint8_t *)*source_pp) + 1);
-  *(((uint8_t *)dest_p) + 1) = **((uint8_t **)source_pp);
+  ((uint8_t *)dest_p)[0] = ((uint8_t *)*source_pp)[1];
+  ((uint8_t *)dest_p)[1] = ((uint8_t *)*source_pp)[0];
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static void a_assign16_swap_inc(void * dest_p, const void ** source_pp)
   {
-  *((uint8_t *)dest_p)       = *(((uint8_t *)*source_pp) + 1);
-  *(((uint8_t *)dest_p) + 1) = **((uint8_t **)source_pp);
-  (*(uint16_t **)(source_pp))++;
+  ((uint8_t *)dest_p)[0] = ((uint8_t *)*source_pp)[1];
+  ((uint8_t *)dest_p)[1] = ((uint8_t *)*source_pp)[0];
+  (*(uint16_t **)source_pp)++;
   }
 
 //---------------------------------------------------------------------------------------
 // Author(s):   Conan Reis
 inline static uint16_t a_as_uint16_t_swap_inc(const void ** source_pp)
   {
-  uint16_t  value;
-  uint8_t * dest_p = (uint8_t *)&value;
-
-  *(dest_p)     = *(((uint8_t *)*source_pp) + 1);
-  *(dest_p + 1) = **((uint8_t **)source_pp);
-
-  (*(uint16_t **)(source_pp))++;
-
+  uint16_t value;
+  ((uint8_t *)&value)[0] = ((uint8_t *)*source_pp)[1];
+  ((uint8_t *)&value)[1] = ((uint8_t *)*source_pp)[0];
+  (*(uint16_t **)source_pp)++;
   return value;
   }
 

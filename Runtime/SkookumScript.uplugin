@@ -3,7 +3,7 @@
   
   "FriendlyName" : "SkookumScript",
   "Version" : 1,
-  "VersionName" : "3.0.1304",
+  "VersionName" : "3.0.1373",
   "CreatedBy" : "Agog Labs Inc.",
   "CreatedByURL" : "http://SkookumScript.com",
   "DocsURL" : "http://skookumscript.com/docs/integrations/ue4plugin/",
@@ -19,7 +19,7 @@
       "Name": "SkookumScriptRuntime",
       "Type": "Runtime",
       "LoadingPhase": "PreDefault",
-      "WhitelistPlatforms": [ "Win64", "Win32" ]
+      "WhitelistPlatforms": [ "Win64", "Win32", "IOS" ]
     },
     {
       "Name" : "SkookumScriptEditor",

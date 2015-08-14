@@ -22,6 +22,20 @@ namespace UnrealBuildTool.Rules
       bFasterWithoutUnity = false; // SSUEBindings.cpp takes a long time to compile due to auto-generated engine bindings
 
       // NOTE: All modules inside the SkookumScript plugin folder must use the exact same definitions!
+
+      switch (Target.Platform)
+      {
+        case UnrealTargetPlatform.Win32:
+        case UnrealTargetPlatform.Win64:
+          Definitions.Add("WIN32_LEAN_AND_MEAN");
+          break;
+        case UnrealTargetPlatform.IOS:
+          Definitions.Add("A_PLAT_iOS");
+          Definitions.Add("NO_AGOG_PLACEMENT_NEW");
+          Definitions.Add("A_NO_GLOBAL_EXCEPTION_CATCH");              
+          break;
+      }
+
       switch (Target.Configuration)
       {
       case UnrealTargetConfiguration.Debug:
@@ -75,6 +89,7 @@ namespace UnrealBuildTool.Rules
             "InputCore",
             "Sockets",
             "Networking",
+            "OnlineSubsystem",
             "SlateCore",
             "Slate",
             "AgogCore",

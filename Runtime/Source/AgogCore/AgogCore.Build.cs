@@ -12,18 +12,29 @@ public class AgogCore : ModuleRules
     var bPlatformAllowed = false;
     
     string platPathSuffix = Target.Platform.ToString();
+    string libPathExt = ".a";
+    bool useDebugCRT = BuildConfiguration.bDebugBuildsActuallyUseDebugCRT;
     
     switch (Target.Platform)
     {
     case UnrealTargetPlatform.Win32:
       bPlatformAllowed = true;
       platPathSuffix = Path.Combine("Win32", "VS2013");
+      libPathExt = ".lib";
       Definitions.Add("WIN32_LEAN_AND_MEAN");
       break;
     case UnrealTargetPlatform.Win64:
       bPlatformAllowed = true;
       platPathSuffix = Path.Combine("Win64", "VS2013");
+      libPathExt = ".lib";
       Definitions.Add("WIN32_LEAN_AND_MEAN");
+      break;
+    case UnrealTargetPlatform.IOS:
+      bPlatformAllowed = true;
+      Definitions.Add("A_PLAT_iOS");
+      Definitions.Add("NO_AGOG_PLACEMENT_NEW");
+      Definitions.Add("A_NO_GLOBAL_EXCEPTION_CATCH");
+      useDebugCRT = true;
       break;
     }
 
@@ -37,21 +48,21 @@ public class AgogCore : ModuleRules
       Definitions.Add("A_EXTRA_CHECK=1");
       Definitions.Add("A_UNOPTIMIZED=1");
       Definitions.Add("SKOOKUM=31");
-      libNameSuffix = BuildConfiguration.bDebugBuildsActuallyUseDebugCRT ? "-Debug.lib" : "-DebugCRTOpt.lib";
+      libNameSuffix = useDebugCRT ? "-Debug" : "-DebugCRTOpt";
       break;
 
     case UnrealTargetConfiguration.Development:
     case UnrealTargetConfiguration.Test:
       Definitions.Add("A_EXTRA_CHECK=1");
       Definitions.Add("SKOOKUM=31");
-      libNameSuffix = "-Development.lib";
+      libNameSuffix = "-Development";
       break;
 
     case UnrealTargetConfiguration.Shipping:
       Definitions.Add("A_SYMBOL_STR_DB=1");
       Definitions.Add("A_NO_SYMBOL_REF_LINK=1");
       Definitions.Add("SKOOKUM=8");
-      libNameSuffix = "-Shipping.lib";
+      libNameSuffix = "-Shipping";
       break;
     }
     
@@ -67,7 +78,7 @@ public class AgogCore : ModuleRules
       Log.TraceVerbose("AgogCore library added to path: {0}", libPath);
       
       PublicLibraryPaths.Add(libPath);
-      PublicAdditionalLibraries.Add(Path.Combine(libPath, "AgogCore" + libNameSuffix));
+      PublicAdditionalLibraries.Add(Path.Combine(libPath, "AgogCore" + libNameSuffix + libPathExt));
     }
   }    
 }

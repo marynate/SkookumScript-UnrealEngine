@@ -21,6 +21,7 @@
 #include <AgogCore/APArray.hpp>
 #include <AgogCore/AList.hpp>
 #include <SkookumScript/SkInstance.hpp>
+#include <SkookumScript/SkObject.hpp>
 #include <SkookumScript/SkDebug.hpp>
 #include <SkookumScript/SkSymbolDefs.hpp>
 
@@ -379,7 +380,7 @@ class SkInvokedContextBase : public SkInvokedBase
       public:
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        SkAutoDestroyInstance(_ParamClasses... args) : SkInstance(SkBrain::ms_object_class_p)
+        SkAutoDestroyInstance(_ParamClasses... args) : SkInstance(SkObject::ms_class_p)
           {
           //A_DPRINT("SkAutoDestroyInstance::ctor() - called.\n");
           m_ref_count = 1u;

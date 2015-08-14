@@ -119,11 +119,11 @@ class SkClass;
 // [There may be a more sophisticated methodology for a callback with context though an
 // abstract base base class is simple and effective.]
 // 
-// #See Also
+// See:
 //   SkClass::iterate_expressions(), SkClass::iterate_expressions_recurse(),
 //   SkExpressionBase::iterate_expressions()
 //   
-// #Author(s) Conan Reis
+// Author(s): Conan Reis
 struct SkApplyExpressionBase
   {
   // Called with each expression being iterated over.
@@ -136,9 +136,9 @@ struct SkApplyExpressionBase
 
 
 //---------------------------------------------------------------------------------------
-// Notes      SkookumScript ExpressionBase
+// SkookumScript ExpressionBase
 // Subclasses See eSkExprType above.
-// Author(s)  Conan Reis
+// Author(s): Conan Reis
 class SkExpressionBase
   {
   public:
@@ -256,15 +256,19 @@ class SkExpressionBase
 
 
 //---------------------------------------------------------------------------------------
-// Notes      SkookumScript loop expression
-// Subclasses 
-// See Also   SkLoopExit
-// Examples:      loop
-//              [
-//              ? loop_test() [exit].
-//              loop_code()
-//              ]
-// Author(s)  Conan Reis
+// SkookumScript loop expression
+//
+// Examples:
+//   ```
+//   loop
+//     [
+//     if loop_test? [exit]
+//     loop_code
+//     ]
+//   ```
+//
+// See:       SkLoopExit
+// Author(s): Conan Reis
 class SkLoop : public SkExpressionBase
   {
   friend class SkParser;
@@ -334,15 +338,18 @@ class SkLoop : public SkExpressionBase
 
 
 //---------------------------------------------------------------------------------------
-// Notes      SkookumScript loop exit expression
-// Subclasses 
-// See Also   
-// Examples:      loop
-//              [
-//              ? loop_test() [exit].
-//              loop_code()
-//              ]
-// Author(s)  Conan Reis
+// SkookumScript loop exit expression
+// 
+// Examples:
+//   ```
+//   loop
+//     [
+//     if loop_test? [exit]
+//     loop_code
+//     ]
+//   ```
+//
+// Author(s):  Conan Reis
 class SkLoopExit : public SkExpressionBase
   {
   friend class SkParser;

@@ -14,6 +14,7 @@
 
 #include "SkookumScriptRuntimePrivatePCH.h"
 #include "SkUERemote.hpp"
+#include "SkUERuntime.hpp"
 #include "Bindings/SkUEBlueprintInterface.hpp"
 #include <AssertionMacros.h>
 //#include <ws2tcpip.h>
@@ -233,9 +234,20 @@ void SkUERemote::set_mode(eSkLocale mode)
 
         if (m_socket_p)
           {
-          TSharedPtr<FInternetAddr> local_addr = get_ip_address_local();
-          local_addr->SetPort(SkUERemote_ide_port);
-          success = m_socket_p->Connect(*local_addr);
+          TSharedPtr<FInternetAddr> ip_addr = get_ip_address_local();
+
+          // Check if there's a file named "ide-ip.txt" present in the compiled binary folder
+          // If so, use the ip stored in it to connect to the IDE
+          FString ip_file_path = static_cast<SkUERuntime*>(SkUERuntime::ms_default_p)->get_compiled_path() / TEXT("ide-ip.txt");
+          FString ip_text;
+          if (FFileHelper::LoadFileToString(ip_text, *ip_file_path))
+            {
+            bool is_valid;
+            ip_addr->SetIp(*ip_text, is_valid);
+            }
+
+          ip_addr->SetPort(SkUERemote_ide_port);
+          success = m_socket_p->Connect(*ip_addr);
           }
 
         if (!success)
@@ -325,53 +337,61 @@ void SkUERemote::set_editor_interface(ISkookumScriptRuntimeEditorInterface * edi
 //---------------------------------------------------------------------------------------
 bool SkUERemote::spawn_remote_ide()
   {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Look for Skookum IDE in game/project plug-in folder first.
-  FString ide_path(
-    FPaths::GamePluginsDir()
-    / TEXT("SkookumScript/Runtime/SkookumIDE/SkookumIDE") /*TEXT(SK_BITS_ID)*/ TEXT(".exe"));
+  #ifdef A_PLAT_PC
 
-  bool ide_exists = FPaths::FileExists(ide_path);
-
-  if (!ide_exists)
-    {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Look for Skookum IDE in engine plug-in folder next.
+    // Look for Skookum IDE in game/project plug-in folder first.
+    FString ide_path(
+      FPaths::GamePluginsDir()
+      / TEXT("SkookumScript/Runtime/SkookumIDE/SkookumIDE") /*TEXT(SK_BITS_ID)*/ TEXT(".exe"));
 
-    // Don't change ide_path yet so the game version stays the default if neither found.
-    FString ide_engine_path(
-      FPaths::EnginePluginsDir() / TEXT("SkookumScript/Runtime/SkookumIDE/SkookumIDE") /*TEXT(SK_BITS_ID)*/ TEXT(".exe"));
-
-    ide_exists = FPaths::FileExists(ide_engine_path);
+    bool ide_exists = FPaths::FileExists(ide_path);
 
     if (!ide_exists)
       {
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      // Couldn't find IDE
-      UE_LOG(LogSkookum, Warning,
-        TEXT("Could not run SkookumScript IDE!\n")
-        TEXT("Looked in both game/project and engine folders and did not find it:\n")
-        TEXT("  %s\n")
-        TEXT("  %s\n\n")
-        TEXT("Please ensure SkookumScript IDE app is present.\n"),
-        *ide_path,
-        *ide_engine_path);
+      // Look for Skookum IDE in engine plug-in folder next.
 
-      return false;
+      // Don't change ide_path yet so the game version stays the default if neither found.
+      FString ide_engine_path(
+        FPaths::EnginePluginsDir() / TEXT("SkookumScript/Runtime/SkookumIDE/SkookumIDE") /*TEXT(SK_BITS_ID)*/ TEXT(".exe"));
+
+      ide_exists = FPaths::FileExists(ide_engine_path);
+
+      if (!ide_exists)
+        {
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // Couldn't find IDE
+        UE_LOG(LogSkookum, Warning,
+          TEXT("Could not run SkookumScript IDE!\n")
+          TEXT("Looked in both game/project and engine folders and did not find it:\n")
+          TEXT("  %s\n")
+          TEXT("  %s\n\n")
+          TEXT("Please ensure SkookumScript IDE app is present.\n"),
+          *ide_path,
+          *ide_engine_path);
+
+        return false;
+        }
+
+      ide_path = ide_engine_path;
       }
 
-    ide_path = ide_engine_path;
-    }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Found IDE app - now try to run it.
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Found IDE app - now try to run it.
   
-  // Path seems to need to be made fully qualified in order to work
-  FPaths::MakePathRelativeTo(ide_path, TEXT("/"));
+    // Path seems to need to be made fully qualified in order to work
+    FPaths::MakePathRelativeTo(ide_path, TEXT("/"));
 
-  FPlatformProcess::LaunchFileInDefaultExternalApplication(*ide_path);
+    FPlatformProcess::LaunchFileInDefaultExternalApplication(*ide_path);
 
-  return true;
+    return true;
+
+  #else
+
+    return false;
+
+  #endif
   }
 
 

@@ -29,6 +29,7 @@
 // Author(s):   Conan Reis
 A_INLINE SkParser::Args::Args() :
   m_flags(ArgFlag__default),
+  m_idx_probe(0u),
   m_desired_type_p(nullptr),
   m_start_pos(0u),
   m_end_pos(0u),
@@ -47,6 +48,7 @@ A_INLINE SkParser::Args::Args(
   uint32_t flags // = ArgFlag__default
   ) :
   m_flags(flags),
+  m_idx_probe(0u),
   m_desired_type_p(nullptr),
   m_start_pos(start_pos),
   m_end_pos(0u),
@@ -62,6 +64,9 @@ A_INLINE SkParser::Args::Args(
 // Author(s):   Conan Reis
 A_INLINE SkParser::Args::Args(const Args & args) :
   m_flags(args.m_flags),
+  m_idx_probe(args.m_idx_probe),
+  m_idx_probe_func(args.m_idx_probe_func),
+  m_idx_probe_user(args.m_idx_probe_user),
   m_desired_type_p(args.m_desired_type_p),
   m_start_pos(args.m_start_pos),
   m_end_pos(args.m_end_pos),
@@ -78,6 +83,9 @@ A_INLINE SkParser::Args::Args(const Args & args) :
 A_INLINE SkParser::Args & SkParser::Args::operator=(const Args & args)
   {
   m_flags          = args.m_flags;
+  m_idx_probe      = args.m_idx_probe;
+  m_idx_probe_func = args.m_idx_probe_func;
+  m_idx_probe_user = args.m_idx_probe_user;
   m_start_pos      = args.m_start_pos;
   m_end_pos        = args.m_end_pos;
   m_result         = args.m_result;
@@ -91,11 +99,13 @@ A_INLINE SkParser::Args & SkParser::Args::operator=(const Args & args)
 // Resets the "in" data
 // Returns:    itself so that it can be simultaneously reset and passed as an argument
 // See:        other constructors, reset() methods
-// Author(s):   Conan Reis
+// Author(s):  Conan Reis
 A_INLINE SkParser::Args & SkParser::Args::reset()
   {
-  m_start_pos      = 0u;
   m_flags          = ArgFlag__default;
+  m_idx_probe      = 0u;
+  m_idx_probe_func = nullptr;
+  m_start_pos      = 0u;
   m_type_p         = nullptr;
   m_desired_type_p = nullptr;
 
@@ -106,19 +116,64 @@ A_INLINE SkParser::Args & SkParser::Args::reset()
 
 //---------------------------------------------------------------------------------------
 // Resets the "in" data
-// Returns:    itself so that it can be simultaneously reset and passed as an argument
-// See:        other constructors, reset() methods
-// Author(s):   Conan Reis
+// 
+// Returns:   itself so that it can be simultaneously reset and passed as an argument
+// See:       other constructors, reset() methods
+// Author(s): Conan Reis
 A_INLINE SkParser::Args & SkParser::Args::reset(uint32_t start_pos)
   {
-  m_start_pos      = start_pos;
   m_flags          = ArgFlag__default;
+  m_idx_probe      = 0u;
+  m_idx_probe_func = nullptr;
+  m_start_pos      = start_pos;
   m_type_p         = nullptr;
   m_desired_type_p = nullptr;
 
   // Note that some of the "out" data is left unmodified
 
   return *this;
+  }
+
+//---------------------------------------------------------------------------------------
+A_INLINE SkParser::Args & SkParser::Args::set_idx_probe(
+  uint32_t  idx_probe,
+  bool (*   idx_probe_func)(SkParser * parser_p, Args & args), // = nullptr
+  uintptr_t user_data // = 0u
+  )
+  {
+  m_flags |= ArgFlag_parse_to_idx_probe;
+  m_idx_probe      = idx_probe;
+  m_idx_probe_func = idx_probe_func;
+  m_idx_probe_user = user_data;
+
+  return *this;
+  }
+
+//---------------------------------------------------------------------------------------
+// Called when parse is at an index probe point, calls any registered index probe
+// callback and determines if the parse should halt or continue.
+// 
+// Returns:
+//   `true` if parse should halt and return `Result__idx_probe` or `false` if parse should
+//   continue as optionally specified by `m_idx_probe_func` which may alter the probe
+//   index or other aspects of the parse.
+//   
+// Params:
+//   parser_p:
+//     parser object with interesting context to be passed to optional `m_idx_probe_func`
+// 
+// See: `ArgFlag_parse_to_idx_probe`, `m_idx_probe_user` and `m_idx_probe_func`
+A_INLINE bool SkParser::Args::is_idx_probe_halt(const SkParser * parser_p)
+  {
+  if ((m_idx_probe_func == nullptr) 
+    || (m_idx_probe_func)(const_cast<SkParser *>(parser_p), *this))
+    {
+    // Halt parse and return probe info
+    m_result = Result__idx_probe;
+    return true;
+    }
+
+  return false;
   }
 
 
@@ -134,7 +189,8 @@ A_INLINE SkParser::Args & SkParser::Args::reset(uint32_t start_pos)
 A_INLINE SkParser::SkParser(const AString & str) :
   AString(str),
   m_flags(ms_default_flags),
-  m_member_type(SkMember__invalid)
+  m_member_type(SkMember__invalid),
+  m_current_block_p(nullptr)
   {
   reset_scope();
   }
@@ -174,7 +230,8 @@ A_INLINE SkParser::SkParser(
   ) :
   AString(cstr_p, length, persistent_b),
   m_flags(ms_default_flags),
-  m_member_type(SkMember__invalid)
+  m_member_type(SkMember__invalid),
+  m_current_block_p(nullptr)
   {
   reset_scope();
   }

@@ -6,6 +6,7 @@
 CMakeLists.txt
 /Runtime/Scripts/Engine-Generated/**
 /Runtime/*.bat
+/Runtime/*.sh
 /Runtime/*.py
 /Runtime/SkookumIDE/Skookum-user.ini
 

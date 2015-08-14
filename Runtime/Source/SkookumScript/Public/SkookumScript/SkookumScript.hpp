@@ -220,7 +220,7 @@ const f32 SkCall_interval_always = 0.0f;
 const f32 SkCall_interval_never = FLT_MAX;
 
 //---------------------------------------------------------------------------------------
-// Indicates that invocation/call should return immediately - like methods, after a
+// Indicates whether an invocation/call should return immediately - like methods, after a
 // duration (including immediately) - like coroutines or either.
 enum eSkInvokeTime
   {

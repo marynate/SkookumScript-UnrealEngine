@@ -46,8 +46,8 @@ FSkookumScriptListenerAutoPtr::~FSkookumScriptListenerAutoPtr()
 
 USkookumScriptListener::USkookumScriptListener(const FObjectInitializer& ObjectInitializer)
   : Super(ObjectInitializer)
-  , m_unregister_callback_p(nullptr)
   , m_num_arguments(0)
+  , m_unregister_callback_p(nullptr)
   {
   }
 

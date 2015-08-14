@@ -215,7 +215,7 @@
   // $Revisit - CReis Look into using __func__ and __PRETTY_FUNCTION__ instead
   #define __FUNCSIG__  __FUNCTION__
 
-  #define A_BREAK()   abort()
+  #define A_BREAK()   __builtin_trap()
 
   // Use old POSIX call convention rather than new ISO convention
   #define _gcvt       gcvt
@@ -223,6 +223,11 @@
   #define _strnicmp   strncasecmp
   #define _snprintf   snprintf
   #define _vsnprintf  vsnprintf
+
+  // Indicate that _itoa(), _ultoa(), and _gcvt() are not defined
+  #define A_NO_NUM2STR_FUNCS
+
+  #pragma clang diagnostic ignored "-Wundefined-bool-conversion"
 
 #endif
 

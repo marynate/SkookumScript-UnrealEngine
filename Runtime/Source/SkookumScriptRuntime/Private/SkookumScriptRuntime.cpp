@@ -56,6 +56,7 @@ class FSkookumScriptRuntime : public ISkookumScriptRuntime, public FTickableGame
     void          on_world_init_post(UWorld * world_p, const UWorld::InitializationValues init_vals);
     void          on_world_cleanup(UWorld * world_p, bool session_ended_b, bool cleanup_resources_b);
     void          on_asset_loaded(UObject * new_object_p);
+    void          on_blueprint_compiled(UBlueprint * blueprint_p);
 
     void          set_game_world(UWorld * world_p);
 
@@ -497,14 +498,18 @@ void FSkookumScriptRuntime::on_world_cleanup(UWorld * world_p, bool session_ende
     }
   }
 
-//---------------------------------------------------------------------------------------
 #if WITH_EDITOR
+//---------------------------------------------------------------------------------------
+
 void FSkookumScriptRuntime::on_asset_loaded(UObject * new_object_p)
   {
   // is this a new blueprint?
   UBlueprint * blueprint_p = Cast<UBlueprint>(new_object_p);
   if (blueprint_p)
     {
+    // Register callback so we know when this Blueprint has been compiled
+    blueprint_p->OnCompiled().AddRaw(this, &FSkookumScriptRuntime::on_blueprint_compiled);
+
     // Reinitialize bindings for this new blueprint
     SkClass * sk_class_p = SkUEClassBindingHelper::get_sk_class_from_ue_class(blueprint_p->GeneratedClass);
     if (sk_class_p)
@@ -517,6 +522,18 @@ void FSkookumScriptRuntime::on_asset_loaded(UObject * new_object_p)
       }
     }
   }
+
+//---------------------------------------------------------------------------------------
+
+void FSkookumScriptRuntime::on_blueprint_compiled(UBlueprint * blueprint_p)
+  {
+  SkClass * sk_class_p = SkUEClassBindingHelper::get_sk_class_from_ue_class(blueprint_p->GeneratedClass);
+  if (sk_class_p)
+    {
+    m_runtime.get_blueprint_interface()->reinitialize_class(sk_class_p);
+    }
+  }
+
 #endif
 
 //---------------------------------------------------------------------------------------

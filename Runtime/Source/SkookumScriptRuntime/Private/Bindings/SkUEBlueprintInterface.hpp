@@ -42,6 +42,8 @@ class SkUEBlueprintInterface
       {
       ASymbol             m_name;
       SkClassDescBase *   m_type_p;
+
+      TypedName(const ASymbol & name, SkClassDescBase * type_p) : m_name(name), m_type_p(type_p) {}
       };
 
     enum eBindingType
@@ -57,18 +59,18 @@ class SkUEBlueprintInterface
       SkClass *                 m_sk_class_p;       // Copy of m_sk_method_p->get_scope() in case m_sk_method_p goes bad
       SkMethodBase *            m_sk_method_p;
       TWeakObjectPtr<UClass>    m_ue_class_p;       // Copy of m_ue_method_p->GetOwnerClass() to detect if a deleted UFunction leaves dangling pointers
-      TWeakObjectPtr<UFunction> m_ue_method_p;
+      TWeakObjectPtr<UFunction> m_ue_function_p;
       uint16_t                  m_num_params;
       bool                      m_is_class_member;  // Copy of m_sk_method_p->is_class_method() in case m_sk_method_p goes bad
       bool                      m_marked_for_delete;
-      eBindingType               m_type;
+      eBindingType              m_type;
 
       BindingEntry(SkMethodBase * sk_method_p, UFunction * ue_method_p, uint32_t num_params, eBindingType type)
         : m_method_name(sk_method_p->get_name())
         , m_sk_class_p(sk_method_p->get_scope())
         , m_sk_method_p(sk_method_p)
         , m_ue_class_p(ue_method_p->GetOwnerClass())
-        , m_ue_method_p(ue_method_p)
+        , m_ue_function_p(ue_method_p)
         , m_num_params(num_params)
         , m_is_class_member(sk_method_p->is_class_member())
         , m_marked_for_delete(false)
@@ -80,6 +82,8 @@ class SkUEBlueprintInterface
     struct SkParamEntry : TypedName
       {
       tK2ParamFetcher m_fetcher_p;
+
+      SkParamEntry(const ASymbol & name, SkClassDescBase * type_p, tK2ParamFetcher fetcher_p) : TypedName(name, type_p), m_fetcher_p(fetcher_p) {}
       };
 
     // Function binding (call from Blueprints into Sk)
@@ -88,8 +92,8 @@ class SkUEBlueprintInterface
       SkClassDescBase * m_result_type_p;
       tSkValueGetter    m_result_getter;
 
-      FunctionEntry(SkMethodBase * sk_method_p, UFunction * ue_method_p, uint32_t num_params, SkClassDescBase * result_type_p, tSkValueGetter result_getter)
-        : BindingEntry(sk_method_p, ue_method_p, num_params, BindingType_Function)
+      FunctionEntry(SkMethodBase * sk_method_p, UFunction * ue_function_p, uint32_t num_params, SkClassDescBase * result_type_p, tSkValueGetter result_getter)
+        : BindingEntry(sk_method_p, ue_function_p, num_params, BindingType_Function)
         , m_result_type_p(result_type_p)
         , m_result_getter(result_getter)
         {}
@@ -104,15 +108,17 @@ class SkUEBlueprintInterface
       {
       tSkValueGetter  m_getter_p;
       uint32_t        m_offset;
+
+      K2ParamEntry(const ASymbol & name, SkClassDescBase * type_p, tSkValueGetter getter_p, uint32_t offset) : TypedName(name, type_p), m_getter_p(getter_p), m_offset(offset) {}
       };
 
     // Event binding (call from Sk into Blueprints)
     struct EventEntry : public BindingEntry
       {
-      mutable TWeakObjectPtr<UFunction> m_ue_method_to_invoke_p; // The copy of our method we actually can invoke
+      mutable TWeakObjectPtr<UFunction> m_ue_function_to_invoke_p; // The copy of our method we actually can invoke
 
-      EventEntry(SkMethodBase * sk_method_p, UFunction * ue_method_p, uint32_t num_params)
-        : BindingEntry(sk_method_p, ue_method_p, num_params, BindingType_Event)
+      EventEntry(SkMethodBase * sk_method_p, UFunction * ue_function_p, uint32_t num_params)
+        : BindingEntry(sk_method_p, ue_function_p, num_params, BindingType_Event)
         {}
 
       // The parameter entries are stored behind this structure in memory
@@ -142,7 +148,7 @@ class SkUEBlueprintInterface
     int32_t             store_binding_entry(BindingEntry * binding_entry_p, int32_t binding_index_to_use);
     void                delete_binding_entry(uint32_t binding_index);
     UFunction *         build_ue_function(UClass * ue_class_p, SkMethodBase * sk_method_p, eBindingType binding_type, ParamInfo * out_param_info_array_p);
-    UProperty *         build_ue_param(UFunction * ue_method_p, SkClassDescBase * sk_parameter_class_p, const FName & param_name, ParamInfo * out_param_info_p);
+    UProperty *         build_ue_param(UFunction * ue_function_p, SkClassDescBase * sk_parameter_class_p, const FName & param_name, ParamInfo * out_param_info_p);
     void                bind_event_method(SkMethodBase * sk_method_p);
     
     template<class _TypedName>

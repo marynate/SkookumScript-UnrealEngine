@@ -207,9 +207,9 @@ const FString & SkUERuntime::get_compiled_path() const
   if (!m_compiled_file_b)
     {
     m_compiled_path =
-      FPaths::GameContentDir() / TEXT("SkookumScript") /*TEXT(SK_BITS_ID)*/;
+      FPaths::GameContentDir() / TEXT("skookumscript") /*TEXT(SK_BITS_ID)*/;
 
-    FString compiled_file = m_compiled_path / TEXT("Classes.sk-bin");
+    FString compiled_file = m_compiled_path / TEXT("classes.sk-bin");
 
     // If not found in *game* content directory then try *engine* directory
     m_compiled_file_b = FPaths::FileExists(compiled_file);
@@ -219,9 +219,9 @@ const FString & SkUERuntime::get_compiled_path() const
       // Don't change m_compiled_path yet so the game content version stays the default if
       // neither the game nor engine versions are found.
       FString compiled_path =
-        FPaths::EngineContentDir() / TEXT("SkookumScript") /*TEXT(SK_BITS_ID)*/;
+        FPaths::EngineContentDir() / TEXT("skookumscript") /*TEXT(SK_BITS_ID)*/;
 
-      compiled_file = compiled_path / TEXT("Classes.sk-bin");
+      compiled_file = compiled_path / TEXT("classes.sk-bin");
 
       m_compiled_file_b = FPaths::FileExists(compiled_file);
 
@@ -325,7 +325,7 @@ bool SkUERuntime::is_binary_hierarchy_existing()
 // #Author(s):  Conan Reis
 SkBinaryHandle * SkUERuntime::get_binary_hierarchy()
   {
-  FString compiled_file = get_compiled_path() / TEXT("Classes.sk-bin");
+  FString compiled_file = get_compiled_path() / TEXT("classes.sk-bin");
 
   A_DPRINT("  Loading compiled binary file '%ls'...\n", *compiled_file);
 
@@ -359,7 +359,7 @@ SkBinaryHandle * SkUERuntime::get_binary_class_group(const SkClass & cls)
 // #Author(s):  Conan Reis
 SkBinaryHandle * SkUERuntime::get_binary_symbol_table()
   {
-  FString sym_file = get_compiled_path() / TEXT("Classes.sk-sym");
+  FString sym_file = get_compiled_path() / TEXT("classes.sk-sym");
 
   A_DPRINT("  Loading compiled binary symbol file '%ls'...\n", *sym_file);
 

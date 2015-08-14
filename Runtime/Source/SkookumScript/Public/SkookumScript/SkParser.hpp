@@ -108,7 +108,8 @@ class-conversion = expression ws '>>' [convert-name]
 convert-name     = class
 code-block       = '[' ws [statement {wsr statement} ws] ']'
 statement        = expression | create-temporary | loop-exit
-create-temporary = '!' ws variable-name [ws binding]
+create-temporary = define-temporary [ws binding]
+define-temporary = '!' ws variable-name
 
 Invocations:
 ----------------------
@@ -138,7 +139,7 @@ closure-tail-args = ws send-args ws closure [ws ';' ws return-args]
 send-args        = [argument] {ws [',' ws] [argument]}
 return-args      = [return-arg] {ws [',' ws] [return-arg]}
 argument*        = [named-spec ws] expression
-return-arg*      = [named-spec ws] variable-ident
+return-arg*      = [named-spec ws] variable-ident | define-temporary
 named-spec       = variable-name '#'
 
   * only trailing arguments may be named
@@ -173,7 +174,7 @@ whitespace      = whitespace-char | comment
 whitespace-char = ' ' | alert | backspace | formfeed | newline | carriage-return | horizontal-tab | vertical-tab
 comment         = single-comment | multi-comment
 single-comment  = '//' {printable-char} (newline | end-of-file)
-multi-comment   = '/*' {printable-char} [multi-comment {printable-char}] '* /'
+multi-comment   = '/ *' {printable-char} [multi-comment {printable-char}] '* /'
 
 Characters and Digits:
 ----------------------
@@ -240,7 +241,7 @@ class SkParameterBase;
 class SkTypedClass;
 class SkUnaryParam;
 
-#if defined (A_PLAT_PS3) || defined(A_PLAT_PS4) || defined(A_PLAT_LINUX64) || defined(A_PLAT_OSX)
+#if defined (A_PLAT_PS3) || defined(A_PLAT_PS4) || defined(A_PLAT_LINUX64) || defined(A_PLAT_OSX) || defined(A_PLAT_iOS)
   #include <AgogCore/APArray.hpp>
 #else
   template<class _ElementType, class _KeyType = _ElementType, class _CompareClass = ACompareAddress<_KeyType> > class APArray;
@@ -301,6 +302,7 @@ class SkParser : public AString
 
       // Intermediary states
       Result__implicit_this,                 // assumes/infers an implicit 'this' prior to an invocation
+      Result__idx_probe,                     // Successfully reached desired index position and returning context information when Args has ArgFlag_parse_to_idx_probe set.
 
       // Warnings
       Result_warn__start,                    // Start of Warnings
@@ -399,6 +401,7 @@ class SkParser : public AString
       Result_err_unexpected_else_statement,   // Found an 'else' without a matching 'if' or 'case'.
       Result_err_unexpected_eof,              // Hit end of file prior to the completion of a parse.
       Result_err_unexpected_exit,             // Found a loop 'exit' in an invalid location
+      Result_err_unexpected_exit_no_loop,     // Found a loop 'exit' when not nested in the specified loop
       Result_err_unexpected_implicit_this,    // Operator calls may not be used with an implicit 'this' - otherwise it is more error prone and even when used correctly it is more difficult to understand
       Result_err_unexpected_parameter,        // The parameter list expected ',' or ')'.
       Result_err_unexpected_parameter_rargs,  // The parameter list did not expect an extra semi-colon ';'!  Return parameters already started.
@@ -424,6 +427,7 @@ class SkParser : public AString
       Result_err_context_duped_data,          // * This data member name is a duplicate of one already existing in this class
       Result_err_context_duped_data_super,    // * This data member name is a duplicate of one already existing in a superclass of this class
       Result_err_context_duped_data_sub,      // * This data member name is a duplicate of one already existing in a subclass of this class
+      Result_err_context_duped_loop_name,     // Loop with the same name already present in the current scope.
       Result_err_context_duped_param_name,    // Argument with the same name already present in the parameter list
       Result_err_context_duped_rparam_name,   // Argument with the same name already present in the return parameter list
       Result_err_context_duped_variable,      // A variable with the same name is already present in the current scope
@@ -490,6 +494,7 @@ class SkParser : public AString
       Identify_lexical_error
       };
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     enum eIdentifyFlag
       {
       IdentifyFlag_none         = 0,
@@ -520,11 +525,32 @@ class SkParser : public AString
       };
 
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Used by SkParser::Args.m_flags below.
     enum eArgFlag
       {
-      // Should a data-structure be created from the parse?
+      // Create a data-structure (and any dependencies )as a result of a successful parse
       ArgFlag_make_struct    = 1 << 0,
+
+      // Parse only to the specified index position and get context information for
+      // auto-complete, etc.
+      // 
+      //   Args struct values on return:
+      //     m_result:         Result__idx_probe or if result before idx (Result_ok or error)
+      //     m_start_pos:      Starting position of last/current expression
+      //     m_end_pos:        Ending position of last/current expression
+      //     m_type_p:         Type of last/current expression
+      //     m_desired_type_p: Type that is desired at current position
+      //     
+      //   Future *nice-to-have* context:
+      //     - desired and result eSkInvokeTime expression duration
+      //     - has side effect?
+      //     - routine + argument/idx
+      //     - object id type (could store in m_type_p)
+      //     - expression type
+      //     - on whitespace/comment?
+      //     - full syntax terminal
+      ArgFlag_parse_to_idx_probe = 1 << 1,
 
       ArgFlag__none              = 0x0,
       ArgFlag__default           = ArgFlag_make_struct,
@@ -533,6 +559,8 @@ class SkParser : public AString
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Used to simplify the arguments passed to the common parse methods
+    // 
+    // Author(s): Conan Reis
     struct Args
       {
       // Data Members
@@ -542,9 +570,26 @@ class SkParser : public AString
           // See SkParser::eArgFlag above.
           uint32_t m_flags;
 
+          // Get context at specified index position when `m_flags` is set to
+          // `ArgFlag_parse_to_idx_probe`.
+          // See: `ArgFlag_parse_to_idx_probe`, `m_idx_probe_user` and `m_idx_probe_func`.
+          uint32_t  m_idx_probe;
+
+          // Optional user data to be used by m_idx_probe_func if set.
+          uintptr_t m_idx_probe_user;
+
+          // Callback function to invoke once index probe point reached.
+          bool (* m_idx_probe_func)(SkParser * parser_p, Args & args);
+
+        // IN/OUT Data
+
           // Type hint for upcoming parse so that less type info needs to be specified.
           // nullptr if don't desire a specific type or desired type not known.
           SkClassDescBase * m_desired_type_p;
+
+          // Whether upcoming parse should be immediate (method), durational (coroutine)
+          // or either - see `eSkInvokeTime` and `m_exec_time`
+          //eSkInvokeTime m_desired_exec_time
 
           // Character index position to begin lexical analysis - defaults to 0u.
           // [Once an Args has been passed in to a parse method, this value may become
@@ -570,15 +615,20 @@ class SkParser : public AString
           // be checked to determine if the parse was valid.]  Some parse methods are more
           // simplistic and do not return a data-structure and so return true if it is
           // Result_ok and false if it is not.
-          // [This is occasionally used as IN data too.]
+          // [This is occasionally used as IN data internally too.]
           eResult m_result;
 
           // Resulting class type of the expression / statement just parsed.
           // Only set / valid if it makes sense for the parse method (i.e. it is
           // something that *can* have a type - see parse method comments) and the code
           // has already been through the preparse phase (Flag_preparse is not set and
-          // Flag_type_check is set).  [This is occasionally used as IN data too.]
+          // Flag_type_check is set).
+          // [This is occasionally used as IN data internally too.]
           SkClassDescBase * m_type_p;
+
+          // Whether resulting expression/statement just parsed was immediate (method) or
+          // durational (coroutine) - see `eSkInvokeTime` and `m_desired_exec_time`
+          //eSkInvokeTime m_exec_time
 
 
       // Methods
@@ -594,11 +644,23 @@ class SkParser : public AString
         Args & reset();
         Args & reset(uint32_t start_pos);
         Args & set_start(uint32_t start_pos)  { m_start_pos = start_pos; return *this; }
+        Args & set_idx_probe(uint32_t idx_probe, bool (* idx_probe_func)(SkParser * parser_p, Args & args) = nullptr, uintptr_t user_data = 0u);
 
         bool is_ok() const                { return (m_result == Result_ok); }
         bool is_struct_wanted() const     { return (m_flags & ArgFlag_make_struct) != 0u; }
+        bool is_idx_probe_halt(const SkParser * parser_p);
 
       };  // SkParser::Args
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Keep track of important nesting.
+    // - currently tracking loops
+    // - used by SkParser::m_nest_stack
+    struct NestInfo : public ANamed, AListNode<NestInfo>
+      {
+      NestInfo(const ASymbol & name) : ANamed(name) {}
+      };
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -662,7 +724,7 @@ class SkParser : public AString
       SkLoopExit *       parse_loop_exit(Args & args = ms_def_args.reset()) const;
       SkMethodBase *     parse_method(Args & args = ms_def_args.reset(), const ASymbol & name = ASymbol::get_null(), eSkInvokeTime desired_exec_time = SkInvokeTime_any, bool append_to_class_b = true) const;
       SkCoroutineBase *  parse_coroutine(Args & args = ms_def_args.reset(), const ASymbol & name = ASymbol::get_null(), bool append_to_class_b = true) const;
-      bool               parse_temporary(Args & args = ms_def_args.reset(), ASymbol * ident_p = nullptr, SkExpressionBase ** expr_pp = nullptr) const;
+      bool               parse_temporary(Args & args = ms_def_args.reset(), ASymbol * ident_p = nullptr, SkExpressionBase ** expr_pp = nullptr, bool * predicate_p = nullptr, bool allow_binding = true) const;
 
 
     // Simple Parse Methods
@@ -714,7 +776,6 @@ class SkParser : public AString
     static void print_stats();
 
     static AFlagSet32 & get_default_flags()                                  { return ms_default_flags; }
-           bool         ensure_exec_time(const SkExpressionBase & expr, Args & args, eSkInvokeTime desired_exec_time) const;
     static bool         is_ident_operator(uint32_t sym_id);
     static bool         is_ident_reserved(uint32_t sym_id);
     static bool         is_strict()                                          { return ms_default_flags.is_set_any(Flag_strict); }
@@ -812,6 +873,7 @@ class SkParser : public AString
   // Internal Methods
 
     SkMethodBase * get_method_inherited(SkClassDescBase * class_p, const ASymbol & method_name) const;
+    bool           find_nested(const ASymbol & name) const;
 
     // Internal Interface/Parameter Methods
 
@@ -843,8 +905,8 @@ class SkParser : public AString
       SkDivert *           parse_divert_block(Args & args) const;
       SkObjectId *         parse_object_id_tail(Args & args, SkClass * class_p = nullptr) const;
       SkInvocation *       parse_prefix_operator_expr(const ASymbol & op_name, Args & args) const;
-      bool                 parse_statement_append(Args & args, SkCode * code_p, eSkInvokeTime desired_exec_time = SkInvokeTime_any) const;
-      bool                 parse_temporary_append(Args & args, SkCode * code_p) const;
+      bool                 parse_statement_append(Args & args, eSkInvokeTime desired_exec_time = SkInvokeTime_any) const;
+      bool                 parse_temporary_append(Args & args) const;
 
       // Internal Methods that need args.m_type_p to be set with class type of receiver on
       // entry and are set to resulting type on exit
@@ -877,13 +939,17 @@ class SkParser : public AString
     // Internal Simple Parse Methods
 
       ASymbol as_symbol(                uint32_t start_pos, uint32_t end_pos) const;
-      bool    ensure_expr_effect(const SkExpressionBase * expr_p, uint32_t * pos_p, Args & args) const;
       bool    is_constructor(           uint32_t start_pos = 0u) const;
       eResult parse_digits_lead(        uint32_t start_pos, uint32_t * end_pos_p, SkIntegerType * int_p) const;
       void    parse_name_symbol(        uint32_t start_pos, uint32_t * end_pos_p, ASymbol * name_p = nullptr) const;
       eResult parse_name_predicate(     uint32_t start_pos, uint32_t * end_pos_p, ASymbol * name_p = nullptr, bool * predicate_p = nullptr, bool test_resevered = true) const;
       eResult parse_named_specifier(    uint32_t start_pos, uint32_t * end_pos_p = nullptr, const SkParameters * params_p = nullptr, uint32_t * arg_idx_p = nullptr, SkParameters::eType param_type = SkParameters::Type_send) const;
 
+      // Test methods that depend on expression data-structure
+      // $Vital - CReis These tests need to be rewritten to work even if an expression structure is not available
+
+        bool              ensure_expr_effect(const SkExpressionBase * expr_p, uint32_t * pos_p, Args & args) const;
+        bool              ensure_exec_time(const SkExpressionBase & expr, Args & args, eSkInvokeTime desired_exec_time) const;
       SkClassDescBase * identifier_desired_type(SkIdentifier * identifier_p, SkClassDescBase * identifier_type_p, SkClassDescBase * context_type_p) const;
       eResult           identifier_validate_bind(SkExpressionBase * identifier_p) const;
       eResult           identifier_validate_bind_type(SkIdentifier * identifier_p, SkClassDescBase * old_type_p, SkClassDescBase * new_type_p) const;
@@ -900,6 +966,11 @@ class SkParser : public AString
     // Scope context of current parse
     mutable SkTypeContext m_context;
 
+    // Nesting stack - see NestInfo
+    mutable AList<NestInfo> m_nest_stack;
+
+    // Most recent code block
+    mutable SkCode * m_current_block_p;
 
   // Class Data Members
 

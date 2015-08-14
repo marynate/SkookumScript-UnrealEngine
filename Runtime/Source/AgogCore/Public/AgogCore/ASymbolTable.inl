@@ -50,4 +50,26 @@ A_INLINE ASymbolRef * ASymbolTable::get_symbol(uint32_t id) const
   #endif
   }
 
+
+//---------------------------------------------------------------------------------------
+//  Returns a symbol ref at the given index, null if table empty or index out-of-range.
+//  
+//  Returns:    ASymbolRef or null symbol ref.
+//  Arg         index - symbol ref index to return
+//  Author(s):  John Stenersen
+A_INLINE ASymbolRef * ASymbolTable::get_symbol_by_index(uint32_t index) const
+  {
+  if (index + 1 > m_sym_refs.get_length())
+    {
+  #if defined(A_SYMBOL_REF_LINK)
+    return ASymbol::ms_null.m_ref_p;
+  #else
+    return const_cast<ASymbolRef *>(&ASymbolRef::get_null());
+  #endif
+    }
+
+  return m_sym_refs.get_at(index);
+  }
+
+
 #endif // A_SYMBOLTABLE_CLASSES

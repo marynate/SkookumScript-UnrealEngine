@@ -10,9 +10,8 @@
 // # Returns: random item or `nil` if list is empty.
 //
 // # Examples:
-//   !idx
 //   !letters: {"A" "B" "C" "D"}
-//   !letter:  letters.any_or_nil(; idx)
+//   !letter:  letters.any_or_nil(; !idx)
 //   println("letter: " letter ", random idx: " idx)
 //
 //   // Tell random bad guy in list *that might be empty* to do something

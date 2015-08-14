@@ -11,9 +11,8 @@
 //
 // Examples:
 //   ```
-//   !idx
 //   !letters: {"A" "B" "C" "D"}
-//   !letter:  letters.any(; idx)
+//   !letter:  letters.any(; !idx)
 //   println("letter: " letter ", random idx: " idx)
 //
 //   // Tell random bad guy in list to do something
